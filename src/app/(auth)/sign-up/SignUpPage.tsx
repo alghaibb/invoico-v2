@@ -31,7 +31,7 @@ export default function SignUpPage() {
 
       <div className="mt-6 text-center">
         <Button asChild className="w-full">
-          <Link href="/magic-link">Sign up with Magic Link</Link>
+          <Link href="/magic-link-sign-up">Sign up with Magic Link</Link>
         </Button>
       </div>
 

@@ -31,7 +31,7 @@ export default function SignInPage() {
 
       <div className="mt-6 text-center">
         <Button asChild className="w-full">
-          <Link href="/magic-link">Sign in with Magic Link</Link>
+          <Link href="/magic-link-sign-in">Sign in with Magic Link</Link>
         </Button>
       </div>
 
