@@ -26,7 +26,7 @@ export default function Page() {
             <CardDescription>Manage your invoices</CardDescription>
           </div>
           <Button asChild variant="outline" className="flex items-center gap-2">
-            <Link href="/invoices/new">
+            <Link href="/dashboard/invoices/create">
               <PlusIcon className="size-5" />
               Create Invoice
             </Link>
