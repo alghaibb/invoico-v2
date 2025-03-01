@@ -4,7 +4,7 @@ import * as React from "react";
 import { useImperativeHandle } from "react";
 
 interface UseAutosizeTextAreaProps {
-  textAreaRef: React.MutableRefObject<HTMLTextAreaElement | null>;
+  textAreaRef: React.RefObject<HTMLTextAreaElement | null>;
   minHeight?: number;
   maxHeight?: number;
   triggerAutoSize: string;
@@ -51,6 +51,7 @@ export type AutosizeTextAreaRef = {
 type AutosizeTextAreaProps = {
   maxHeight?: number;
   minHeight?: number;
+  error?: boolean;
 } & React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 export const AutosizeTextarea = React.forwardRef<
@@ -64,6 +65,7 @@ export const AutosizeTextarea = React.forwardRef<
       className,
       onChange,
       value,
+      error,
       ...props
     }: AutosizeTextAreaProps,
     ref: React.Ref<AutosizeTextAreaRef>
@@ -95,7 +97,10 @@ export const AutosizeTextarea = React.forwardRef<
         value={value}
         ref={textAreaRef}
         className={cn(
-          "flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex w-full rounded-md border px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          error
+            ? "border-destructive bg-destructive/10 text-destructive placeholder:text-destructive focus-visible:ring-destructive/50"
+            : "border-input bg-background",
           className
         )}
         onChange={(e) => {

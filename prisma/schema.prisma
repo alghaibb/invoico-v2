@@ -23,6 +23,7 @@ model User {
   verificationOTPs    VerificationOTP[]
   resetPasswordTokens ResetPasswordToken[]
   magicLinkTokens     MagicLinkToken[]
+  invoices            Invoice[]
 
   @@map("users")
 }
@@ -99,4 +100,53 @@ model MagicLinkToken {
 
   @@index([token])
   @@map("magic_link_tokens")
+}
+
+model Invoice {
+  id String @id @default(cuid())
+
+  invoiceName   String        @default("New Invoice")
+  total         Int
+  tax           Int
+  status        InvoiceStatus
+  date          DateTime
+  dueDate       Int
+  fromName      String
+  fromEmail     String?
+  fromAddress   String?
+  clientName    String
+  clientEmail   String?
+  clientAddress String?
+  currency      String
+  invoiceNumber String
+  notes         String?
+
+  invoiceItems InvoiceItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id          String  @id @default(cuid())
+  invoice     Invoice @relation(fields: [invoiceId], references: [id])
+  invoiceId   String
+  description String
+  quantity    Int
+  price       Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("invoice_items")
+}
+
+enum InvoiceStatus {
+  PAID
+  PENDING
+  OVERDUE
 }
