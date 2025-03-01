@@ -20,26 +20,29 @@ async function fetchInvoices(userId: string) {
     where: {
       userId: userId,
       status: "PENDING",
-      date: {
-        lte: new Date(today.setDate(today.getDate() - 1)),
-      },
-      dueDate: {
-        lte: 0,
-      },
+      OR: [
+        {
+          dueDate: 0,
+        },
+        {
+          date: {
+            lte: new Date(today.setDate(today.getDate() - 1)),
+          },
+        },
+      ],
     },
     data: {
       status: "OVERDUE",
     },
   });
-
   return prisma.invoice.findMany({
     where: { userId: userId },
     select: {
       id: true,
       clientName: true,
       total: true,
-      date: true, // Invoice creation date
-      dueDate: true, // Number of days until due
+      date: true, 
+      dueDate: true, 
       status: true,
       invoiceNumber: true,
       currency: true,
