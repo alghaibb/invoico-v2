@@ -105,8 +105,7 @@ export default function CreateInvoiceForm({
   };
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const subscription = form.watch((value, { name, type }) => {
+    const subscription = form.watch((_value, { name }) => {
       if (name?.startsWith("invoiceItems") || name === "tax") {
         const items = form.getValues("invoiceItems");
         const subtotal = items.reduce(

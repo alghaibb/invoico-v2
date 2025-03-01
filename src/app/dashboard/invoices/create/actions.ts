@@ -7,13 +7,7 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
 export async function createInvoice(values: InvoiceValues) {
-  console.log("🚀 Received values:", values); // Debugging log
-
-  if (!values || Object.keys(values).length === 0) {
-    console.error("❌ Error: Received empty values in createInvoice!");
-    throw new Error("Invalid form submission: Values are empty or null");
-  }
-
+  console.log("🚀 Received values:", values);
   try {
     const validatedValues = invoiceSchema.parse(values);
     console.log("✅ Validated values:", validatedValues);
@@ -27,7 +21,7 @@ export async function createInvoice(values: InvoiceValues) {
     await prisma.invoice.create({
       data: {
         userId: user,
-        invoiceNumber: validatedValues.invoiceNumber, // Keep it as a string
+        invoiceNumber: validatedValues.invoiceNumber, 
         invoiceName: validatedValues.invoiceName,
         total: validatedValues.total,
         tax: validatedValues.tax,
