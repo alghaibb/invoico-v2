@@ -10,10 +10,10 @@ export const invoiceSchema = z.object({
   dueDate: z.number().int().min(0),
   fromName: z.string().min(1, "From name is required"),
   fromEmail: z.string().email("Invalid email address").optional().or(z.literal("")),
-  fromAddress: z.string().optional().or(z.literal("")),
+  fromAddress: z.string().optional().nullable().or(z.literal("")),
   clientName: z.string().min(1, "Client name is required"),
-  clientEmail: z.string().email("Invalid email address").optional().or(z.literal("")),
-  clientAddress: z.string().optional().or(z.literal("")),
+  clientEmail: z.string().email("Invalid email address").optional().nullable().or(z.literal("")),
+  clientAddress: z.string().optional().nullable().or(z.literal("")),
   currency: z.string(),
   notes: z.string().optional().nullable(),
   invoiceItems: z.array(

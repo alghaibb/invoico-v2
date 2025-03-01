@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <Card>
+    <Card className="max-w-7xl mx-auto w-full">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
