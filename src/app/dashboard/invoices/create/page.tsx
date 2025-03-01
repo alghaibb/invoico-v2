@@ -1,11 +1,39 @@
+import prisma from "@/lib/prisma";
+import { getSession } from "@/utils/session";
 import { Metadata } from "next";
-import CreateInvoice from "../_components/CreateInvoice";
+import CreateInvoiceForm from "../_components/CreateInvoiceForm";
 
 export const metadata: Metadata = {
   title: "Create Invoice",
   description: "Create Invoice page",
 };
 
-export default function Page() {
-  return <CreateInvoice />;
+async function getUserData(userId: string) {
+  const data = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      firstName: true,
+      lastName: true,
+      email: true,
+    },
+  });
+
+  return data;
+}
+
+export default async function Page() {
+  const session = await getSession();
+  const userId = session?.user.id;
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+  const userData = await getUserData(userId);
+
+  return (
+    <CreateInvoiceForm
+      firstName={userData?.firstName || ""}
+      lastName={userData?.lastName || ""}
+      email={userData?.email || ""}
+    />
+  );
 }
