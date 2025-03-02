@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { AutosizeTextarea } from "@/components/ui/textarea";
+import { Currency } from "@/types/currency";
+import { formatCurrency } from "@/utils/format-currency";
 import {
   invoiceSchema,
   InvoiceValues,
@@ -52,7 +54,7 @@ export default function CreateInvoiceForm({
 }: CreateInvoiceFormProps) {
   const [isPending, startTransition] = useTransition();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [currency, setCurrency] = useState("AUD");
+  const [currency, setCurrency] = useState<Currency>("AUD");
   const [selectedTax, setSelectedTax] = useState(10);
 
   const form = useForm<InvoiceValues>({
@@ -89,20 +91,6 @@ export default function CreateInvoiceForm({
       }
     });
   }
-
-  const formatCurrency = ({
-    amount,
-    currency,
-  }: {
-    amount: number;
-    currency: string;
-  }) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency,
-      minimumFractionDigits: 2,
-    }).format(amount);
-  };
 
   useEffect(() => {
     const subscription = form.watch((_value, { name }) => {
@@ -203,7 +191,7 @@ export default function CreateInvoiceForm({
                         value={field.value}
                         onValueChange={(val) => {
                           field.onChange(val);
-                          setCurrency(val);
+                          setCurrency(val as Currency);
                         }}
                       >
                         <SelectTrigger>
@@ -215,6 +203,7 @@ export default function CreateInvoiceForm({
                           <SelectItem value="AUD">AUD</SelectItem>
                           <SelectItem value="USD">USD</SelectItem>
                           <SelectItem value="EUR">EUR</SelectItem>
+                          <SelectItem value="GBP">GBP</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -656,11 +645,6 @@ export default function CreateInvoiceForm({
                 type="submit"
                 loading={isPending}
                 disabled={isPending}
-                onClick={async () => {
-                  const isValid = await form.trigger();
-                  console.log("Is form valid?", isValid);
-                  console.log("Validation Errors:", form.formState.errors);
-                }}
               >
                 {isPending ? "Creating Invoice..." : "Create Invoice"}
               </LoadingButton>

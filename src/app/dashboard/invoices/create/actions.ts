@@ -10,9 +10,9 @@ export async function createInvoice(values: InvoiceValues) {
   console.log("🚀 Received values:", values);
   try {
     const validatedValues = invoiceSchema.parse(values);
-    console.log("✅ Validated values:", validatedValues);
 
     const session = await getSession();
+
     if (!session || !session.user?.id) {
       throw new Error("Unauthorized: No user session found.");
     }
@@ -21,7 +21,7 @@ export async function createInvoice(values: InvoiceValues) {
     await prisma.invoice.create({
       data: {
         userId: user,
-        invoiceNumber: validatedValues.invoiceNumber, 
+        invoiceNumber: validatedValues.invoiceNumber,
         invoiceName: validatedValues.invoiceName,
         total: validatedValues.total,
         tax: validatedValues.tax,
@@ -46,11 +46,10 @@ export async function createInvoice(values: InvoiceValues) {
       },
     });
 
-    console.log("✅ Invoice successfully created!");
     return redirect("/dashboard/invoices");
   } catch (error) {
     if (isRedirectError(error)) throw error;
-    console.error("❌ Error creating invoice:", error);
+    console.error("Error creating invoice:", error);
     return { error: "An error occurred. Please try again." };
   }
 }
