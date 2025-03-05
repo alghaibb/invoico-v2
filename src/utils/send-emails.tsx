@@ -1,8 +1,9 @@
 import {
+  MagicLinkEmail,
   ResendOTPEmail,
   ResetPasswordEmail,
+  SendInvoiceEmail,
   VerifyEmail,
-  MagicLinkEmail
 } from "@/components/emails";
 import { env } from "@/env";
 import prisma from "@/lib/prisma";
@@ -89,7 +90,7 @@ export const sendMagicLinkEmail = async (email: string, magicLink: string) => {
       email,
     },
   });
-  
+
   if (!user || !user.firstName) {
     throw new Error("User not found or missing first name.");
   }
@@ -98,4 +99,31 @@ export const sendMagicLinkEmail = async (email: string, magicLink: string) => {
     <MagicLinkEmail userFirstName={user.firstName} magicLink={magicLinkToken} />
   );
   await sendEmail(email, "Your Magic Link to Sign In", emailComponent);
+};
+
+export const sendInvoiceEmail = async (
+  email: string,
+  clientName: string,
+  invoiceNumber: string,
+  dueDate: string,
+  total: string,
+  downloadLink: string,
+  senderName?: string
+) => {
+  const emailComponent = (
+    <SendInvoiceEmail
+      clientName={clientName}
+      invoiceNumber={invoiceNumber}
+      dueDate={dueDate}
+      total={total}
+      downloadLink={downloadLink}
+      senderName={senderName}
+    />
+  );
+
+  await sendEmail(
+    email,
+    `Your Invoice from ${senderName} is Ready`,
+    emailComponent
+  );
 };

@@ -34,48 +34,75 @@ import {
   InvoiceValues,
 } from "@/validations/invoice/create-invoice-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { InvoiceStatus } from "@prisma/client";
 import { CalendarIcon, Plus, X } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { createInvoice } from "../create/actions";
+import { editInvoice } from "../../actions";
 
-interface CreateInvoiceFormProps {
-  firstName: string;
-  lastName: string;
-  email: string;
+interface EditInvoiceFormProps {
+  data: {
+    id: string;
+    invoiceName: string;
+    total: number;
+    tax: number;
+    status: string;
+    date: Date;
+    dueDate: number;
+    fromName: string;
+    fromEmail: string | null;
+    fromAddress: string | null;
+    clientName: string;
+    clientEmail: string | null;
+    clientAddress: string | null;
+    currency: string;
+    invoiceNumber: string;
+    notes: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    invoiceItems: {
+      description: string;
+      quantity: number;
+      price: number;
+    }[];
+  };
 }
 
-export default function CreateInvoiceForm({
-  firstName,
-  lastName,
-  email,
-}: CreateInvoiceFormProps) {
+export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
   const [isPending, startTransition] = useTransition();
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [currency, setCurrency] = useState<Currency>("AUD");
-  const [selectedTax, setSelectedTax] = useState(10);
+  const [selectedDate, setSelectedDate] = useState(data.date);
+  const [currency, setCurrency] = useState(data.currency as Currency);
+  const [selectedTax, setSelectedTax] = useState(data.tax);
 
   const form = useForm<InvoiceValues>({
     resolver: zodResolver(invoiceSchema),
+    mode: "onChange",
     defaultValues: {
-      invoiceName: "",
-      invoiceNumber: "",
-      total: 0,
-      tax: 10,
-      status: "PENDING",
-      date: new Date(),
-      dueDate: 7,
-      fromName: firstName + " " + lastName,
-      fromEmail: email,
-      fromAddress: "",
-      clientName: "",
-      clientEmail: "",
-      clientAddress: "",
-      currency: "AUD",
-      notes: "",
-      invoiceItems: [{ description: "", quantity: 1, price: 0 }],
+      invoiceName: data.invoiceName,
+      invoiceNumber: data.invoiceNumber,
+      total: Number(data.total),
+      tax: Number(data.tax),
+      status: data.status as InvoiceStatus,
+      date: data.date,
+      dueDate: data.dueDate,
+      fromName: data.fromName,
+      fromEmail: data.fromEmail as string,
+      fromAddress: data.fromAddress,
+      clientName: data.clientName,
+      clientEmail: data.clientEmail,
+      clientAddress: data.clientAddress,
+      currency: data.currency,
+      notes: data.notes,
+      invoiceItems:
+        data.invoiceItems.length > 0
+          ? data.invoiceItems.map((item) => ({
+              description: item.description,
+              quantity: item.quantity ?? 1,
+              price: item.price ?? 0,
+            }))
+          : [{ description: "", quantity: 1, price: 0 }],
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -85,7 +112,7 @@ export default function CreateInvoiceForm({
 
   async function onSubmit(values: z.infer<typeof invoiceSchema>) {
     startTransition(async () => {
-      const result = await createInvoice(values);
+      const result = await editInvoice(values, data.id);
       if (result?.error) {
         toast.error(result.error);
       }
@@ -101,7 +128,7 @@ export default function CreateInvoiceForm({
           0
         );
         const taxAmount = (subtotal * selectedTax) / 100;
-        const total = Math.round(subtotal + taxAmount);
+        const total = parseFloat((subtotal + taxAmount).toFixed(2));
 
         form.setValue("total", total, {
           shouldDirty: true,
@@ -646,7 +673,7 @@ export default function CreateInvoiceForm({
                 loading={isPending}
                 disabled={isPending}
               >
-                {isPending ? "Creating Invoice..." : "Create Invoice"}
+                {isPending ? "Editing Invoice..." : "Edit Invoice"}
               </LoadingButton>
             </div>
           </CardContent>

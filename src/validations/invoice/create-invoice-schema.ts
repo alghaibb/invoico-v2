@@ -4,7 +4,7 @@ export const invoiceSchema = z.object({
   invoiceName: z.string().min(1, "Invoice name is required"),
   invoiceNumber: z.string().min(1, "Invoice number is required"),
   total: z.number().min(0),
-  tax: z.number().int().min(0).max(100),
+  tax: z.number().min(0).max(100),
   status: z.enum(["PENDING", "PAID", "OVERDUE"]),
   date: z.preprocess((val) => new Date(val as string), z.date()),
   dueDate: z.number().int().min(0),
@@ -19,7 +19,7 @@ export const invoiceSchema = z.object({
   invoiceItems: z.array(
     z.object({
       description: z.string().min(1, "Description is required"),
-      quantity: z.number().int().min(1), 
+      quantity: z.number().min(1), 
       price: z.number().int().min(0), 
     })
   ).min(1, "At least one item is required"),

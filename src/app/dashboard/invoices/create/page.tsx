@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { getSession } from "@/utils/session";
 import { Metadata } from "next";
-import CreateInvoiceForm from "../_components/CreateInvoiceForm";
+import CreateInvoiceForm from "../_components/forms/CreateInvoiceForm";
 
 export const metadata: Metadata = {
   title: "Create Invoice",
