@@ -3,9 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { AlertTriangle } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function NotFoundPage() {
+  const router = useRouter();
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
       <motion.div
@@ -21,9 +23,9 @@ export default function NotFoundPage() {
         <p className="text-muted-foreground max-w-md">
           Oops! The page you’re looking for doesn’t exist or has been moved.
         </p>
-        <Link href="/">
-          <Button className="mt-4">Go Back Home</Button>
-        </Link>
+        <Button className="mt-4" onClick={() => router.back()}>
+          Go Back
+        </Button>
       </motion.div>
     </div>
   );
