@@ -11,6 +11,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 import InvoiceTable from "./_components/InvoiceTable";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Invoices",
   description: "Invoices page",
