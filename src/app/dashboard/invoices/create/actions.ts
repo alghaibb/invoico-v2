@@ -7,7 +7,6 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
 export async function createInvoice(values: InvoiceValues) {
-  console.log("🚀 Received values:", values);
   try {
     const validatedValues = invoiceSchema.parse(values);
 

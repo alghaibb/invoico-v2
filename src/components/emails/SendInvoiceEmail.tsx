@@ -11,28 +11,62 @@ import {
 
 interface SendInvoiceEmailProps {
   clientName: string;
+  invoiceNumber: string;
+  dueDate: string;
+  total: string;
   downloadLink: string;
+  senderName?: string;
 }
 
 export const SendInvoiceEmail = ({
   clientName,
+  invoiceNumber,
+  dueDate,
+  total,
   downloadLink,
+  senderName,
 }: SendInvoiceEmailProps) => {
   return (
     <Html>
       <Head />
-      <Preview>Your Invoice from Invoico</Preview>
+      <Preview>Invoice from {senderName as string}</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section>
-            <Text style={text}>Hello {clientName},</Text>
+            <Text style={text}>Dear {clientName},</Text>
             <Text style={text}>
-              Your invoice is ready. Click the button below to download it.
+              We hope this email finds you well. Below are the details of your
+              invoice from <b>{senderName}</b>. You can download it using the
+              button below.
             </Text>
+
+            <Text style={text}>
+              <b>Invoice Details:</b>
+            </Text>
+            <ul style={list}>
+              <li>
+                <b>Invoice Number:</b> {invoiceNumber}
+              </li>
+              <li>
+                <b>Due Date:</b> {dueDate}
+              </li>
+              <li>
+                <b>Total Amount:</b> {total}
+              </li>
+            </ul>
+
             <Button style={button} href={downloadLink}>
               Download Invoice
             </Button>
-            <Text style={text}>Thank you for using Invoico.</Text>
+
+            <Text style={text}>
+              If you have any questions or need further assistance, feel free to
+              reach out.
+            </Text>
+            <Text style={text}>Best regards,</Text>
+            <Text style={text}>
+              <b>{senderName}</b>
+            </Text>
           </Section>
         </Container>
       </Body>
@@ -64,5 +98,12 @@ const button = {
   padding: "12px",
   margin: "20px auto",
 };
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const logo = { display: "block", margin: "0 auto 20px" };
+const list = {
+  fontSize: "16px",
+  fontFamily: "'Arial', sans-serif",
+  color: "#374151",
+  lineHeight: "24px",
+  paddingLeft: "20px",
+};
+
+export default SendInvoiceEmail;

@@ -8,6 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import prisma from "@/lib/prisma";
+import { Currency } from "@/types/currency";
 import { formatCurrency } from "@/utils/format-currency";
 import { getSession } from "@/utils/session";
 import { FileText } from "lucide-react";
@@ -41,8 +42,8 @@ async function fetchInvoices(userId: string) {
       id: true,
       clientName: true,
       total: true,
-      date: true, 
-      dueDate: true, 
+      date: true,
+      dueDate: true,
       status: true,
       invoiceNumber: true,
       currency: true,
@@ -103,8 +104,8 @@ export default async function InvoiceTable() {
               <TableCell>{invoice.clientName}</TableCell>
               <TableCell>
                 {formatCurrency({
-                  amount: invoice.total,
-                  currency: invoice.currency as "USD" | "EUR" | "AUD" | "GBP",
+                  amount: Number(invoice.total.toFixed(2)),
+                  currency: invoice.currency as Currency,
                 })}
               </TableCell>
               <TableCell>
@@ -116,7 +117,7 @@ export default async function InvoiceTable() {
                 }).format(dueDate)}
               </TableCell>
               <TableCell className="text-right">
-                <ActionsDropdown />
+                <ActionsDropdown invoiceId={invoice.id} />
               </TableCell>
             </TableRow>
           );
