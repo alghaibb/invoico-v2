@@ -3,6 +3,8 @@ import { getSession } from "@/utils/session";
 import { Metadata } from "next";
 import CreateInvoiceForm from "../_components/forms/CreateInvoiceForm";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Create Invoice",
   description: "Create Invoice page",

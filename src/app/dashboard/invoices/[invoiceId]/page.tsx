@@ -3,6 +3,8 @@ import { getSession } from "@/utils/session";
 import { notFound } from "next/navigation";
 import EditInvoiceForm from "../_components/forms/EditInvoiceForm";
 
+export const dynamic = "force-dynamic";
+
 async function getInvoiceData(invoiceId: string, userId: string) {
   const invoiceData = await prisma.invoice.findUnique({
     where: { id: invoiceId },
