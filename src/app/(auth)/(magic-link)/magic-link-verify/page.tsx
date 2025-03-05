@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import VerifyMagicLinkPage from "./VerifyMagicLinkPage";
 
 export const metadata: Metadata = {
@@ -6,5 +7,9 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <VerifyMagicLinkPage />;
+  return (
+    <Suspense fallback={<p>loading...</p>}>
+      <VerifyMagicLinkPage />
+    </Suspense>
+  );
 }
