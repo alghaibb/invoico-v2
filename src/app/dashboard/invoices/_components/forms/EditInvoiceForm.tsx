@@ -118,12 +118,9 @@ export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
       if (result?.error) {
         toast.error(result.error);
       } else if (result?.success) {
-        toast.success(result.success);
-
-        setTimeout(() => {
-          router.push("/dashboard/invoices");
-          router.refresh();
-        }, 1000);
+        toast.success(result.success); 
+        router.push("/dashboard/invoices"); 
+        router.refresh();
       }
     });
   }
