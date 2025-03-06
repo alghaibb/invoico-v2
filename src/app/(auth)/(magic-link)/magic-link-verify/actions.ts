@@ -22,7 +22,6 @@ export async function verifyMagicLink(token: string) {
 
     await signIn("credentials", {
       email: user.email,
-      redirect: true,
     });
 
     redirect("/dashboard");

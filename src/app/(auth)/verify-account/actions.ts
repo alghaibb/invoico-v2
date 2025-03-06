@@ -30,7 +30,6 @@ export async function verifyAccount(values: OTPValues) {
     await deleteVerificationOTP(otp);
 
     const result: { error?: string } = await signIn("credentials", {
-      redirect: false,
       email: user.email,
       password: "",
     });
