@@ -419,116 +419,129 @@ export default function CreateInvoiceForm({
             </div>
 
             <div className="space-y-6">
-              <div className="grid grid-cols-12 gap-4 font-medium ">
+              <div className="hidden md:grid grid-cols-12 gap-4 font-medium ">
                 <p className="col-span-6">Description</p>
                 <p className="col-span-2">Quantity</p>
                 <p className="col-span-2">Price</p>
                 <p className="col-span-2">Amount</p>
               </div>
 
-              {fields.map((item, index) => (
-                <div
-                  key={item.id}
-                  className="grid items-center grid-cols-12 gap-4"
-                >
-                  <FormField
-                    control={form.control}
-                    name={`invoiceItems.${index}.description`}
-                    render={({ field, fieldState }) => (
-                      <FormItem className="col-span-6">
-                        <FormControl>
-                          <AutosizeTextarea
-                            {...field}
-                            placeholder="Item description"
-                            error={!!fieldState.error}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+              <div className="space-y-4">
+                {fields.map((item, index) => (
+                  <div
+                    key={item.id}
+                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-4 items-center"
+                  >
+                    <FormField
+                      control={form.control}
+                      name={`invoiceItems.${index}.description`}
+                      render={({ field, fieldState }) => (
+                        <FormItem className="md:col-span-6">
+                          <FormLabel className="md:hidden">
+                            Description
+                          </FormLabel>
+                          <FormControl>
+                            <AutosizeTextarea
+                              {...field}
+                              placeholder="Item description"
+                              error={!!fieldState.error}
+                              onChange={(e) => field.onChange(e.target.value)}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <FormField
-                    control={form.control}
-                    name={`invoiceItems.${index}.quantity`}
-                    render={({ field, fieldState }) => (
-                      <FormItem className="col-span-2">
-                        <FormControl>
-                          <Input
-                            {...field}
-                            type="number"
-                            placeholder="1"
-                            min={1}
-                            value={field.value || 1}
-                            onChange={(e) => {
-                              const value = Math.max(
-                                1,
-                                Number(e.target.value) || 1
-                              );
-                              field.onChange(value);
-                              form.trigger();
-                            }}
-                            error={!!fieldState.error}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    <FormField
+                      control={form.control}
+                      name={`invoiceItems.${index}.quantity`}
+                      render={({ field, fieldState }) => (
+                        <FormItem className="md:col-span-2">
+                          <FormLabel className="md:hidden">Quantity</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="number"
+                              placeholder="1"
+                              min={1}
+                              value={field.value || 1}
+                              onChange={(e) => {
+                                const value = Math.max(
+                                  1,
+                                  Number(e.target.value) || 1
+                                );
+                                field.onChange(value);
+                                form.trigger();
+                              }}
+                              error={!!fieldState.error}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <FormField
-                    control={form.control}
-                    name={`invoiceItems.${index}.price`}
-                    render={({ field, fieldState }) => (
-                      <FormItem className="col-span-2">
-                        <FormControl>
-                          <Input
-                            {...field}
-                            type="number"
-                            placeholder="0"
-                            value={field.value === 0 ? "" : field.value}
-                            onChange={(e) => {
-                              const value =
-                                e.target.value === ""
-                                  ? 0
-                                  : Number(e.target.value);
-                              field.onChange(value);
-                              form.trigger();
-                            }}
-                            onBlur={(e) => {
-                              if (e.target.value === "") {
-                                field.onChange(0);
-                              }
-                            }}
-                            error={!!fieldState.error}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    <FormField
+                      control={form.control}
+                      name={`invoiceItems.${index}.price`}
+                      render={({ field, fieldState }) => (
+                        <FormItem className="md:col-span-2">
+                          <FormLabel className="md:hidden">Price</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="number"
+                              placeholder="0"
+                              value={field.value === 0 ? "" : field.value}
+                              onChange={(e) => {
+                                const value =
+                                  e.target.value === ""
+                                    ? 0
+                                    : Number(e.target.value);
+                                field.onChange(value);
+                                form.trigger();
+                              }}
+                              onBlur={(e) => {
+                                if (e.target.value === "") {
+                                  field.onChange(0);
+                                }
+                              }}
+                              error={!!fieldState.error}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <div className="flex items-center justify-between col-span-2">
-                    <span className="text-right">
-                      {formatCurrency({
-                        amount:
-                          form.watch(`invoiceItems.${index}.quantity`) *
-                          form.watch(`invoiceItems.${index}.price`),
-                        currency,
-                      })}
-                    </span>
-                    {fields.length > 1 && (
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => remove(index)}
-                      >
-                        <X className="size-4" />
-                      </Button>
-                    )}
+                    <div className="md:col-span-2 flex justify-between items-center">
+                      <div>
+                        <span className="md:hidden block font-medium">
+                          Amount
+                        </span>
+                        <span className="text-right">
+                          {formatCurrency({
+                            amount:
+                              form.watch(`invoiceItems.${index}.quantity`) *
+                              form.watch(`invoiceItems.${index}.price`),
+                            currency,
+                          })}
+                        </span>
+                      </div>
+                      {fields.length > 1 && (
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => remove(index)}
+                        >
+                          <X className="size-4" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
 
               <div className="flex justify-end mt-4">
                 <Button
