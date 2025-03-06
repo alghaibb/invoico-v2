@@ -22,7 +22,7 @@ export async function verifyMagicLink(token: string) {
 
     await signIn("credentials", {
       email: user.email,
-      redirect: false,
+      redirect: true,
     });
 
     redirect("/dashboard");

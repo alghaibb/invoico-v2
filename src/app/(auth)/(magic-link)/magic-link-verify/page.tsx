@@ -1,3 +1,4 @@
+import { Spinner } from "@/components/ui/loading-spinner";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import VerifyMagicLinkPage from "./VerifyMagicLinkPage";
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <Suspense fallback={<p>loading...</p>}>
+    <Suspense fallback={<Spinner />}>
       <VerifyMagicLinkPage />
     </Suspense>
   );
