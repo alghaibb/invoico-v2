@@ -19,13 +19,15 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import SendInvoiceModal from "./SendInvoiceEmailModal";
+import DeleteInvoiceModal from "./DeleteInvoiceModal";
 
 interface ActionsDropdownProps {
   invoiceId: string;
 }
 
 export default function ActionsDropdown({ invoiceId }: ActionsDropdownProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSendModalOpen, setIsSendModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   return (
     <>
@@ -61,7 +63,7 @@ export default function ActionsDropdown({ invoiceId }: ActionsDropdownProps) {
 
           <DropdownMenuItem
             onClick={() => {
-              setIsModalOpen(true);
+              setIsSendModalOpen(true);
             }}
             className="flex items-center gap-2"
           >
@@ -79,19 +81,26 @@ export default function ActionsDropdown({ invoiceId }: ActionsDropdownProps) {
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem asChild>
-            <Link href="" className="flex items-center gap-2">
-              <Trash className="size-4 text-destructive" />
-              <span>Delete Invoice</span>
-            </Link>
+          <DropdownMenuItem
+            onClick={() => setIsDeleteModalOpen(true)}
+            className="flex items-center gap-2 cursor-default"
+          >
+            <Trash className="size-4 text-destructive" />
+            <span>Delete Invoice</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       <SendInvoiceModal
-        open={isModalOpen}
+        open={isSendModalOpen}
         invoiceId={invoiceId}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => setIsSendModalOpen(false)}
+      />
+
+      <DeleteInvoiceModal
+        open={isDeleteModalOpen}
+        invoiceId={invoiceId}
+        onClose={() => setIsDeleteModalOpen(false)}
       />
     </>
   );

@@ -8,6 +8,7 @@ import { sendInvoiceEmail } from "@/utils/send-emails"
 import { getSession } from "@/utils/session"
 import { invoiceSchema, InvoiceValues } from "@/validations/invoice/create-invoice-schema"
 import { sendInvoiceSchema, SendInvoiceValues } from "@/validations/invoice/send-invoice-schema"
+import { revalidatePath } from "next/cache"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
 
 export async function sendInvoice(values: SendInvoiceValues, invoiceId: string) {
@@ -125,5 +126,27 @@ export async function editInvoice(values: InvoiceValues, invoiceId: string) {
     if (isRedirectError(error)) throw error;
     console.error("Error editing invoice:", error)
     return { error: "An error occurred. Please try again." }
+  }
+}
+
+export async function deleteInvoice(invoiceId: string) {
+  try {
+    const session = await getSession();
+    const user = session?.user.id;
+
+    if (!user) {
+      throw new Error("Unauthorized: No user session found.");
+    }
+
+    await prisma.invoice.delete({
+      where: { id: invoiceId },
+    });
+
+    revalidatePath("/dashboard/invoices");
+
+    return { success: "Invoice successfully deleted." }
+  } catch (error) {
+    console.error("Error deleting invoice:", error)
+    return { error: "Failed to delete invoice. Please try again." };
   }
 }

@@ -1,3 +1,5 @@
+"use client";
+
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button, LoadingButton } from "@/components/ui/button";
 import {
@@ -11,7 +13,6 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   ResponsiveModal,
-  ResponsiveModalClose,
   ResponsiveModalContent,
   ResponsiveModalFooter,
   ResponsiveModalHeader,
@@ -33,7 +34,11 @@ interface SendInvoiceModalProps {
   onClose: () => void;
 }
 
-export default function SendInvoiceModal({ invoiceId, open, onClose }: SendInvoiceModalProps) {
+export default function SendInvoiceModal({
+  invoiceId,
+  open,
+  onClose,
+}: SendInvoiceModalProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -104,8 +109,9 @@ export default function SendInvoiceModal({ invoiceId, open, onClose }: SendInvoi
   }
 
   return (
-    <ResponsiveModal open={open}>
+    <ResponsiveModal open={open} onOpenChange={onClose}>
       <ResponsiveModalContent>
+        {/* ✅ The built-in close button (X) is already inside ResponsiveModalContent */}
         <ResponsiveModalHeader>
           <ResponsiveModalTitle>Send Invoice</ResponsiveModalTitle>
         </ResponsiveModalHeader>
@@ -145,9 +151,10 @@ export default function SendInvoiceModal({ invoiceId, open, onClose }: SendInvoi
             />
 
             <ResponsiveModalFooter className="gap-3 md:gap-1">
-              <ResponsiveModalClose asChild onClick={onClose}>
-                <Button variant="outline">Cancel</Button>
-              </ResponsiveModalClose>
+              {/* ✅ Only one cancel button now */}
+              <Button variant="outline" onClick={onClose}>
+                Cancel
+              </Button>
               <LoadingButton
                 type="submit"
                 loading={isPending}
