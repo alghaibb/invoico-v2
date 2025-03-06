@@ -117,7 +117,10 @@ export default async function InvoiceTable() {
                 }).format(dueDate)}
               </TableCell>
               <TableCell className="text-right">
-                <ActionsDropdown invoiceId={invoice.id} />
+                <ActionsDropdown
+                  invoiceId={invoice.id}
+                  initialStatus={invoice.status}
+                />
               </TableCell>
             </TableRow>
           );

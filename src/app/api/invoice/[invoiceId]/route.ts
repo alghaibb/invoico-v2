@@ -1,4 +1,6 @@
 import prisma from "@/lib/prisma";
+import { Currency } from "@/types/currency";
+import { formatCurrency } from "@/utils/format-currency";
 import jsPDF from "jspdf";
 import { NextResponse } from "next/server";
 
@@ -48,7 +50,6 @@ export async function GET(
   const marginLeft = 20;
   let y = 20;
 
-  // Format Dates
   const formattedDate = new Intl.DateTimeFormat("en-AU", {
     year: "numeric",
     month: "long",
@@ -61,10 +62,9 @@ export async function GET(
     day: "numeric",
   }).format(new Date(new Date(data.date).setDate(new Date(data.date).getDate() + data.dueDate)));
 
-  // Set Default Font
+  // Header
   pdf.setFont("helvetica", "normal");
 
-  /** 🏆 HEADER **/
   pdf.setFontSize(24);
   pdf.setFont("helvetica", "bold");
   pdf.text(data.invoiceName, 105, y, { align: "center" });
@@ -74,7 +74,7 @@ export async function GET(
   pdf.line(marginLeft, y, 190, y);
   y += 10;
 
-  /** ✉️ FROM Section **/
+  // From 
   pdf.setFontSize(12);
   pdf.setFont("helvetica", "bold");
   pdf.text("From:", marginLeft, y);
@@ -93,7 +93,7 @@ export async function GET(
   }
   y += 8;
 
-  /** 📬 TO Section **/
+  // Bill To
   pdf.setFontSize(12);
   pdf.setFont("helvetica", "bold");
   pdf.text("Bill To:", marginLeft, y);
@@ -112,43 +112,39 @@ export async function GET(
   }
   y += 8;
 
-  /** 📑 INVOICE DETAILS **/
+  // Invoice Details
   pdf.setFontSize(12);
   pdf.setFont("helvetica", "bold");
   pdf.text("Invoice Details:", marginLeft, y);
   y += 6;
 
-  // Set all text in the same column (left-aligned)
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(10);
 
-  // Labels
   pdf.text("Invoice Number:", marginLeft, y);
-  y += 5; // Small gap
+  y += 5;
   pdf.text("Invoice Date:", marginLeft, y);
-  y += 5; // Small gap
+  y += 5;
   pdf.text("Due Date:", marginLeft, y);
-  y += 6; // Extra spacing for clarity
+  y += 6;
 
-  // Set values below their respective labels
   pdf.setFont("helvetica", "bold");
-  pdf.text(`${data.invoiceNumber}`, marginLeft + 27, y - 16); // Align to the right of the label13131313131313131313131313131313
+  pdf.text(`${data.invoiceNumber}`, marginLeft + 27, y - 16);
   pdf.text(`${formattedDate}`, marginLeft + 22, y - 11);
   pdf.text(`${formattedDueDate}`, marginLeft + 17, y - 6);
-  y += 10; // Move down after section
+  y += 10;
 
-  // Separator line
+
   pdf.setLineWidth(0.5);
   pdf.line(marginLeft, y, 190, y);
   y += 10;
 
-  /** 📋 TABLE HEADERS **/
   pdf.setFontSize(12);
   pdf.setFont("helvetica", "bold");
   pdf.text("Description", marginLeft, y);
-  pdf.text("Qty", 120, y);
-  pdf.text("Price", 140, y);
-  pdf.text("Amount", 160, y);
+  pdf.text("Qty", 105, y);
+  pdf.text("Price", 140, y, { align: "right" });
+  pdf.text("Amount", 190, y, { align: "right" });
   y += 6;
 
   pdf.setLineWidth(0.5);
@@ -158,21 +154,28 @@ export async function GET(
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(10);
 
-  /** 🛒 TABLE DATA **/
   let subtotal = 0;
   data.invoiceItems.forEach((item, index) => {
     const amount = Number(item.quantity) * Number(item.price);
     subtotal += amount;
+
+    if (y > 270) {
+      pdf.addPage();
+      y = 20;
+    }
 
     if (index % 2 === 0) {
       pdf.setFillColor(245, 245, 245);
       pdf.rect(marginLeft, y - 5, 170, 8, "F");
     }
 
-    pdf.text(item.description, marginLeft, y);
-    pdf.text(item.quantity.toString(), 120, y);
-    pdf.text(`$${item.price.toFixed(2)}`, 140, y);
-    pdf.text(`$${amount.toFixed(2)}`, 160, y);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(10);
+
+    pdf.text(item.description, marginLeft + 2, y);
+    pdf.text(item.quantity.toString(), 105, y);
+    pdf.text(formatCurrency({ amount: Number(item.price), currency: data.currency as Currency }), 138, y, { align: "right" });
+    pdf.text(formatCurrency({ amount, currency: data.currency as Currency }), 188, y, { align: "right" });
     y += 8;
   });
 
@@ -181,7 +184,6 @@ export async function GET(
   pdf.line(marginLeft, y, 190, y);
   y += 10;
 
-  /** 💰 TOTAL SECTION **/
   const taxAmount = (subtotal * data.tax) / 100;
   const totalAmount = subtotal + taxAmount;
 
@@ -189,26 +191,25 @@ export async function GET(
   pdf.setFont("helvetica", "bold");
   pdf.text("Subtotal:", 140, y);
   pdf.setFont("helvetica", "normal");
-  pdf.text(`$${subtotal.toFixed(2)}`, 170, y);
+  pdf.text(formatCurrency({ amount: subtotal, currency: data.currency as Currency }), 190, y, { align: "right" });
   y += 8;
 
   pdf.setFont("helvetica", "bold");
   pdf.text(`Tax (${data.tax}%):`, 140, y);
   pdf.setFont("helvetica", "normal");
-  pdf.text(`$${taxAmount.toFixed(2)}`, 170, y);
+  pdf.text(formatCurrency({ amount: taxAmount, currency: data.currency as Currency }), 190, y, { align: "right" });
   y += 8;
 
   pdf.setFont("helvetica", "bold");
   pdf.text("Total:", 140, y);
   pdf.setFont("helvetica", "bold");
-  pdf.text(`$${totalAmount.toFixed(2)}`, 170, y);
+  pdf.text(formatCurrency({ amount: totalAmount, currency: data.currency as Currency }), 190, y, { align: "right" });
   y += 12;
 
   pdf.setLineWidth(0.5);
   pdf.line(marginLeft, y, 190, y);
   y += 10;
 
-  /** 📝 OPTIONAL NOTES **/
   if (data.notes) {
     pdf.setFontSize(12);
     pdf.setFont("helvetica", "bold");
@@ -226,12 +227,10 @@ export async function GET(
     y += 6;
   }
 
-  /** 🏁 FOOTER **/
   pdf.setFontSize(10);
   pdf.setFont("helvetica", "italic");
   pdf.text("Thank you for your business!", 105, y, { align: "center" });
 
-  // Generate PDF
   const buffer = Buffer.from(pdf.output("arraybuffer"));
   return new Response(buffer, {
     headers: {
