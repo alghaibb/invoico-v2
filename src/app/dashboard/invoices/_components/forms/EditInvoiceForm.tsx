@@ -36,6 +36,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InvoiceStatus } from "@prisma/client";
 import { CalendarIcon, Plus, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -75,6 +76,7 @@ export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
   const [selectedDate, setSelectedDate] = useState(data.date);
   const [currency, setCurrency] = useState(data.currency as Currency);
   const [selectedTax, setSelectedTax] = useState(data.tax);
+  const router = useRouter();
 
   const form = useForm<InvoiceValues>({
     resolver: zodResolver(invoiceSchema),
@@ -115,6 +117,13 @@ export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
       const result = await editInvoice(values, data.id);
       if (result?.error) {
         toast.error(result.error);
+      } else if (result?.success) {
+        toast.success(result.success);
+
+        setTimeout(() => {
+          router.push("/dashboard/invoices");
+          router.refresh();
+        }, 1000);
       }
     });
   }

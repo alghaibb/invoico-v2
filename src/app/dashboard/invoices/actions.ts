@@ -9,7 +9,6 @@ import { getSession } from "@/utils/session"
 import { invoiceSchema, InvoiceValues } from "@/validations/invoice/create-invoice-schema"
 import { sendInvoiceSchema, SendInvoiceValues } from "@/validations/invoice/send-invoice-schema"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
-import { redirect } from "next/navigation"
 
 export async function sendInvoice(values: SendInvoiceValues, invoiceId: string) {
   try {
@@ -120,7 +119,7 @@ export async function editInvoice(values: InvoiceValues, invoiceId: string) {
       },
     });
 
-    return redirect("/dashboard/invoices");
+    return { success: "Invoice successfully edited." }
 
   } catch (error) {
     if (isRedirectError(error)) throw error;
