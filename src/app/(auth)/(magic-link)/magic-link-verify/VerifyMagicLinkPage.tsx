@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { verifyMagicLink } from "./actions";
+import { useRouter } from "next/navigation";
 
 export default function VerifyMagicLinkPage() {
   const searchParams = useSearchParams();
@@ -14,6 +15,7 @@ export default function VerifyMagicLinkPage() {
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     if (!token) {
@@ -24,16 +26,22 @@ export default function VerifyMagicLinkPage() {
 
     const verify = async () => {
       try {
-        await verifyMagicLink(token);
+        const result = await verifyMagicLink(token);
+        
+        if (result?.error) {
+          setError(result.error);
+        } else if (result?.redirectTo) {
+          router.push(result.redirectTo); 
+        }
       } catch (err) {
-        setError((err as Error).message);
+        setError("An unexpected error occurred.");
       } finally {
         setLoading(false);
       }
     };
 
     verify();
-  }, [token]);
+  }, [token, router]);
 
   return (
     <div className="md:p-8">

@@ -35,26 +35,33 @@ export default async function DashboardLayout({
 
   return (
     <>
-      <div className="grid min-h-screen w-full md:gird-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+      <div className="grid min-h-screen w-full md:grid-cols-[240px_1fr] lg:grid-cols-[300px_1fr]">
+        {/* Sidebar */}
         <div className="hidden border-r bg-muted/40 md:block">
-          <div className="flex flex-col h-full max-h-screen gap-2">
-            <div className="h-14 flex items-center border-b px-4 lg:h-[60px] lg:px-6">
-              <Link href="/" className="flex items-center gap-2">
-                <Image src={logo} alt="logo" className="size-7" />
-                <p className="text-2xl font-bold">Invoico</p>
+          <div className="flex flex-col h-full max-h-screen gap-4">
+            <div className="h-16 flex items-center border-b px-6 lg:h-[72px] lg:px-8">
+              <Link href="/" className="flex items-center gap-3">
+                <Image
+                  src={logo}
+                  alt="logo"
+                  width={140}
+                  height={140} 
+                  className="h-12 w-auto lg:h-14"
+                />
               </Link>
             </div>
 
             <div className="flex-1">
-              <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+              <nav className="grid items-start px-4 text-sm font-medium lg:px-6">
                 <DashboardLinks />
               </nav>
             </div>
           </div>
         </div>
 
+        {/* Main Content */}
         <div className="flex flex-col">
-          <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+          <header className="flex h-16 items-center gap-4 border-b bg-muted/40 px-6 lg:h-[72px] lg:px-8">
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon" className="md:hidden">
@@ -66,12 +73,13 @@ export default async function DashboardLayout({
                   Dashboard Mobile Navigation
                 </SheetTitle>
 
-                <nav className="grid gap-2 mt-10">
+                <nav className="grid gap-4 mt-10">
                   <DashboardLinks />
                 </nav>
               </SheetContent>
             </Sheet>
 
+            {/* User Dropdown */}
             <div className="flex items-center ml-auto">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -80,23 +88,19 @@ export default async function DashboardLayout({
                     className="rounded-full"
                     size="icon"
                   >
-                    <User2 className="size-5" />
+                    <User2 className="size-6" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard">Dashboard</Link>
                   </DropdownMenuItem>
-
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard/invoices">Invoices</Link>
                   </DropdownMenuItem>
-
                   <DropdownMenuSeparator />
-
                   <DropdownMenuItem asChild>
                     <button className="w-full text-left" onClick={signOut}>
                       Sign Out
@@ -107,7 +111,7 @@ export default async function DashboardLayout({
             </div>
           </header>
 
-          <main className="flex flex-col flex-1 gap-4 p-4 lg:gap-6 lg:p-6">
+          <main className="flex flex-col flex-1 gap-6 p-6 lg:gap-8 lg:p-10">
             {children}
           </main>
         </div>

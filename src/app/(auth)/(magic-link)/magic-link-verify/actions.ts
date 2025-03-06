@@ -3,8 +3,6 @@
 import { signIn } from "@/auth";
 import prisma from "@/lib/prisma";
 import { verifyMagicLinkToken } from "@/utils/token";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
-import { redirect } from "next/navigation";
 
 export async function verifyMagicLink(token: string) {
   try {
@@ -22,11 +20,12 @@ export async function verifyMagicLink(token: string) {
 
     await signIn("credentials", {
       email: user.email,
+      redirect: false,
     });
 
-    redirect("/dashboard");
+    return { success: true, redirectTo: "/dashboard" };
+
   } catch (error) {
-    if (isRedirectError(error)) throw error;
     console.error("Error verifying magic link:", error);
     return { error: "An error occurred. Please try again." };
   }

@@ -133,9 +133,9 @@ const authConfig: NextAuthConfig = {
     },
   },
   pages: {
-    signIn: "/login",
-    signOut: "/login",
-    error: "/login",
+    signIn: "/sign-in",
+    signOut: "/sign-in",
+    error: "/sign-in",
   },
   secret: env.AUTH_SECRET,
   experimental: { enableWebAuthn: true },
