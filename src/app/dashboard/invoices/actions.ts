@@ -8,6 +8,7 @@ import { sendInvoiceEmail } from "@/utils/send-emails"
 import { getSession } from "@/utils/session"
 import { invoiceSchema, InvoiceValues } from "@/validations/invoice/create-invoice-schema"
 import { sendInvoiceSchema, SendInvoiceValues } from "@/validations/invoice/send-invoice-schema"
+import { InvoiceStatus } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { isRedirectError } from "next/dist/client/components/redirect-error"
 
@@ -139,7 +140,7 @@ export async function deleteInvoice(invoiceId: string) {
     }
 
     await prisma.invoice.delete({
-      where: { id: invoiceId },
+      where: { id: invoiceId, userId: user },
     });
 
     revalidatePath("/dashboard/invoices");
@@ -150,3 +151,28 @@ export async function deleteInvoice(invoiceId: string) {
     return { error: "Failed to delete invoice. Please try again." };
   }
 }
+
+export async function markInvoiceAsPaid(invoiceId: string, status: InvoiceStatus) {
+  try {
+    const session = await getSession();
+    const user = session?.user.id;
+
+    if (!user) {
+      throw new Error("Unauthorized: No user session found.");
+    }
+
+    await prisma.invoice.update({
+      where: { id: invoiceId, userId: user },
+      data: {
+        status: status,
+      }
+    });
+
+    revalidatePath("/dashboard/invoices");
+
+    return { success: "Invoice status updated." }
+  } catch (error) {
+    console.error("Error marking invoice status:", error)
+    return { error: "Failed to update invoice status" };
+  }
+} 

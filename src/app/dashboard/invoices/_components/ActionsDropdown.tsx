@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { InvoiceStatus } from "@prisma/client";
 import {
   CheckCircle,
   DownloadCloud,
@@ -17,17 +18,44 @@ import {
   Trash,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-import SendInvoiceModal from "./SendInvoiceEmailModal";
+import { useOptimistic, useState, useTransition } from "react";
+import { toast } from "sonner";
+import { markInvoiceAsPaid } from "../actions";
 import DeleteInvoiceModal from "./DeleteInvoiceModal";
+import SendInvoiceModal from "./SendInvoiceEmailModal";
 
 interface ActionsDropdownProps {
   invoiceId: string;
+  initialStatus: InvoiceStatus;
 }
 
-export default function ActionsDropdown({ invoiceId }: ActionsDropdownProps) {
+export default function ActionsDropdown({
+  invoiceId,
+  initialStatus,
+}: ActionsDropdownProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_isPending, startTransition] = useTransition();
+
   const [isSendModalOpen, setIsSendModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [optimisticStatus, setOptimisticStatus] =
+    useOptimistic<InvoiceStatus>(initialStatus);
+
+  async function handleMarkAsPaid() {
+    if (optimisticStatus === "PAID") return;
+
+    startTransition(() => {
+      setOptimisticStatus("PAID");
+
+      markInvoiceAsPaid(invoiceId, "PAID").then((result) => {
+        if (result?.error) {
+          setOptimisticStatus(initialStatus);
+        } else if (result?.success) {
+          toast.success(result.success);
+        }
+      });
+    });
+  }
 
   return (
     <>
@@ -72,11 +100,18 @@ export default function ActionsDropdown({ invoiceId }: ActionsDropdownProps) {
               <span>Send Invoice</span>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href="" className="flex items-center gap-2">
-              <CheckCircle className="size-4 text-green-500" />
-              <span>Mark as Paid</span>
-            </Link>
+          <DropdownMenuItem
+            onClick={handleMarkAsPaid}
+            className={`flex items-center gap-2 cursor-pointer ${
+              optimisticStatus === "PAID"
+                ? "opacity-50 pointer-events-none"
+                : ""
+            }`}
+          >
+            <CheckCircle className="size-4 text-green-500" />
+            <span>
+              {optimisticStatus === "PAID" ? "Marked as Paid" : "Mark as Paid"}
+            </span>
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
