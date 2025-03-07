@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import DashboardBlocks from "./_components/DashboardBlocks";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -8,5 +9,9 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  return <div>hello from dashboard</div>;
+  return (
+    <>
+      <DashboardBlocks />
+    </>
+  );
 }
