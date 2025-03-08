@@ -47,7 +47,7 @@ export default async function DashboardBlocks() {
   const { invoiceData, pendingInvoices, paidInvoices } = await getData(user);
 
   return (
-    <div className="grid w-full gap-4 mx-auto md:grid-cols-2 lg:grid-cols-4 md:gap-8 max-w-screen-2xl">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 md:gap-8">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-0 space-y-0">
           <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
@@ -56,11 +56,20 @@ export default async function DashboardBlocks() {
         <CardContent>
           <h2 className="text-3xl font-extrabold">
             $
-            {invoiceData.reduce(
-              (acc, invoice) => acc + Number(invoice.total),
-              0
-            )}
+            {new Intl.NumberFormat("en-US", {
+              notation: "standard",
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            })
+              .format(
+                invoiceData.reduce(
+                  (acc, invoice) => acc + Number(invoice.total),
+                  0
+                )
+              )
+              .replace(/^(\d{2})(\d{3})$/, "$1,$2")}
           </h2>
+
           <p className="mt-1 text-xs text-muted-foreground">
             Based on the last 30 days
           </p>
