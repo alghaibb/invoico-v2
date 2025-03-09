@@ -172,7 +172,7 @@ export async function markInvoiceAsPaid(invoiceId: string, status: InvoiceStatus
       }
     });
       
-    revalidatePath(`/dashboard/invoices/{invoiceId}`, "page");
+    revalidatePath("/dashboard/invoices", "page");
 
     return { success: "Invoice status updated." };
   } catch (error) {
