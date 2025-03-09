@@ -33,7 +33,7 @@ export default function ActionsDropdown({
   invoiceId,
   initialStatus,
 }: ActionsDropdownProps) {
-  const [isPending, startTransition] = useTransition();
+  // const [isPending, startTransition] = useTransition();
   const [isSendModalOpen, setIsSendModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   
@@ -42,18 +42,16 @@ export default function ActionsDropdown({
 
   async function handleMarkAsPaid() {
   if (optimisticStatus === "PAID") return;
-
-  startTransition(() => {
-    setOptimisticStatus("PAID");
-
-    markInvoiceAsPaid(invoiceId, "PAID").then((result) => {
-      if (result?.error) {
-        setOptimisticStatus(initialStatus);
-      } else if (result?.success) {
-        toast.success(result.success);
-      }
-    });
-  });
+  
+  setOptimisticStatus("PAID");
+  
+  const result = await markInvoiceAsPaid(invoiceId, "PAID");
+  
+  if (result?.error) {
+    setOptimisticStatus(initialStatus);
+  } else if (result?.success) {
+    toast.success(result.success);
+  }
 }
 
   return (
