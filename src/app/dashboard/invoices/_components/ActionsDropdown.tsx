@@ -33,27 +33,33 @@ export default function ActionsDropdown({
   invoiceId,
   initialStatus,
 }: ActionsDropdownProps) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_isPending, startTransition] = useTransition();
-
+  const [isPending, startTransition] = useTransition();
   const [isSendModalOpen, setIsSendModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [optimisticStatus, setOptimisticStatus] =
+  
+  const [optimisticStatus, setOptimisticStatus] = 
     useOptimistic<InvoiceStatus>(initialStatus);
 
-  async function handleMarkAsPaid() {
+  function handleMarkAsPaid() {
     if (optimisticStatus === "PAID") return;
 
-    startTransition(() => {
-      setOptimisticStatus("PAID");
-
-      markInvoiceAsPaid(invoiceId, "PAID").then((result) => {
+    setOptimisticStatus("PAID");
+    
+    startTransition(async () => {
+      try {
+        const result = await markInvoiceAsPaid(invoiceId, "PAID");
+        
         if (result?.error) {
           setOptimisticStatus(initialStatus);
+          toast.error(result.error);
         } else if (result?.success) {
           toast.success(result.success);
         }
-      });
+      } catch (error) {
+        setOptimisticStatus(initialStatus);
+        toast.error("An unexpected error occurred");
+        console.error(error);
+      }
     });
   }
 
@@ -90,28 +96,29 @@ export default function ActionsDropdown({
           <DropdownMenuSeparator />
 
           <DropdownMenuItem
-            onClick={() => {
-              setIsSendModalOpen(true);
-            }}
+            onClick={() => setIsSendModalOpen(true)}
             className="flex items-center gap-2"
           >
-            <Link href="" className="flex items-center gap-2 cursor-default">
+            <div className="flex items-center gap-2 cursor-default">
               <Mail className="size-4 text-yellow-500" />
               <span>Send Invoice</span>
-            </Link>
+            </div>
           </DropdownMenuItem>
+          
           <DropdownMenuItem
             onClick={handleMarkAsPaid}
-            className={`flex items-center gap-2 cursor-pointer ${
-              optimisticStatus === "PAID"
-                ? "opacity-50 pointer-events-none"
-                : ""
-            }`}
+            disabled={optimisticStatus === "PAID" || isPending}
+            className="flex items-center gap-2 cursor-pointer"
           >
-            <CheckCircle className="size-4 text-green-500" />
+            <CheckCircle className={`size-4 ${
+              optimisticStatus === "PAID" ? "text-green-600" : "text-green-500"
+            }`} />
             <span>
               {optimisticStatus === "PAID" ? "Marked as Paid" : "Mark as Paid"}
             </span>
+            {isPending && optimisticStatus === "PAID" && (
+              <span className="ml-auto h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-primary" />
+            )}
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
