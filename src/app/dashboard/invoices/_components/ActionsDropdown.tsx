@@ -18,7 +18,7 @@ import {
   Trash,
 } from "lucide-react";
 import Link from "next/link";
-import { useOptimistic, useState, useTransition } from "react";
+import { useOptimistic, useState } from "react";
 import { toast } from "sonner";
 import { markInvoiceAsPaid } from "../actions";
 import DeleteInvoiceModal from "./DeleteInvoiceModal";
