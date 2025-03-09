@@ -40,28 +40,21 @@ export default function ActionsDropdown({
   const [optimisticStatus, setOptimisticStatus] = 
     useOptimistic<InvoiceStatus>(initialStatus);
 
-  function handleMarkAsPaid() {
-    if (optimisticStatus === "PAID") return;
+  async function handleMarkAsPaid() {
+  if (optimisticStatus === "PAID") return;
 
+  startTransition(() => {
     setOptimisticStatus("PAID");
-    
-    startTransition(async () => {
-      try {
-        const result = await markInvoiceAsPaid(invoiceId, "PAID");
-        
-        if (result?.error) {
-          setOptimisticStatus(initialStatus);
-          toast.error(result.error);
-        } else if (result?.success) {
-          toast.success(result.success);
-        }
-      } catch (error) {
+
+    markInvoiceAsPaid(invoiceId, "PAID").then((result) => {
+      if (result?.error) {
         setOptimisticStatus(initialStatus);
-        toast.error("An unexpected error occurred");
-        console.error(error);
+      } else if (result?.success) {
+        toast.success(result.success);
       }
     });
-  }
+  });
+}
 
   return (
     <>
