@@ -33,7 +33,6 @@ export default function ActionsDropdown({
   invoiceId,
   initialStatus,
 }: ActionsDropdownProps) {
-  // const [isPending, startTransition] = useTransition();
   const [isSendModalOpen, setIsSendModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   
@@ -43,14 +42,27 @@ export default function ActionsDropdown({
   async function handleMarkAsPaid() {
   if (optimisticStatus === "PAID") return;
   
+  const loadingMessages = [
+    "Counting those coins... 💰",
+    "Making it rain... 💸",
+    "Adding to your fortune... 🏆",
+    "Securing the bag... 👝",
+    "Money moves in progress... 📈"
+  ];
+  
+  const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+
   setOptimisticStatus("PAID");
+  
+  const toastId = toast.loading(randomMessage);
   
   const result = await markInvoiceAsPaid(invoiceId, "PAID");
   
   if (result?.error) {
     setOptimisticStatus(initialStatus);
+    toast.error(result.error, { id: toastId });
   } else if (result?.success) {
-    toast.success(result.success);
+    toast.success(result.success || "Ka-ching! Payment recorded! 🎉", { id: toastId });
   }
 }
 
