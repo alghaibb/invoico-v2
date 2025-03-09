@@ -156,23 +156,29 @@ export async function markInvoiceAsPaid(invoiceId: string, status: InvoiceStatus
   try {
     const session = await getSession();
     const user = session?.user.id;
-
+    
     if (!user) {
       throw new Error("Unauthorized: No user session found.");
     }
-
+    
     await prisma.invoice.update({
-      where: { id: invoiceId, userId: user },
+      where: { 
+        id: invoiceId, 
+        userId: user 
+      },
       data: {
-        status: status,
+        status,
+        updatedAt: new Date(), 
       }
     });
-
-    revalidatePath("/dashboard/invoices");
-
-    return { success: "Invoice status updated." }
+    
+    setTimeout(() => {
+      revalidatePath("/dashboard/invoices");
+    }, 0);
+    
+    return { success: "Invoice status updated." };
   } catch (error) {
-    console.error("Error marking invoice status:", error)
+    console.error("Error marking invoice status:", error);
     return { error: "Failed to update invoice status" };
   }
-} 
+}
