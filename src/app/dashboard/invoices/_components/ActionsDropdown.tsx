@@ -38,7 +38,9 @@ export default function ActionsDropdown({
   
 const [optimisticStatus, setOptimisticStatus] = useOptimistic(
   initialStatus,
-  (_state, newStatus) => newStatus
+  (_state, newStatus) => newStatus {
+    return String(newStatus)
+  }
 );
 
 async function handleMarkAsPaid() {
