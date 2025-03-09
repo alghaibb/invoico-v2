@@ -36,7 +36,7 @@ export default function ActionsDropdown({
   const [isSendModalOpen, setIsSendModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   
-const [optimisticStatus, setOptimisticStatus] = useOptimistic<InvoiceStatus>(initialStatus););
+const [optimisticStatus, setOptimisticStatus] = useOptimistic<InvoiceStatus>(initialStatus);
 
 async function handleMarkAsPaid() {
   const previousStatus = optimisticStatus;
