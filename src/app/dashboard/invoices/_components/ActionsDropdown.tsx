@@ -97,20 +97,17 @@ export default function ActionsDropdown({
           </DropdownMenuItem>
           
           <DropdownMenuItem
-            onClick={handleMarkAsPaid}
-            disabled={optimisticStatus === "PAID" || isPending}
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            <CheckCircle className={`size-4 ${
-              optimisticStatus === "PAID" ? "text-green-600" : "text-green-500"
-            }`} />
-            <span>
-              {optimisticStatus === "PAID" ? "Marked as Paid" : "Mark as Paid"}
-            </span>
-            {isPending && optimisticStatus === "PAID" && (
-              <span className="ml-auto h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-primary" />
-            )}
-          </DropdownMenuItem>
+  onClick={handleMarkAsPaid}
+  disabled={optimisticStatus === "PAID"}
+  className="flex items-center gap-2 cursor-pointer"
+>
+  <CheckCircle className={`size-4 ${
+    optimisticStatus === "PAID" ? "text-green-600" : "text-green-500"
+  }`} />
+  <span>
+    {optimisticStatus === "PAID" ? "Marked as Paid" : "Mark as Paid"}
+  </span>
+</DropdownMenuItem>
 
           <DropdownMenuSeparator />
 
