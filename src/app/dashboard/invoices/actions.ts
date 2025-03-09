@@ -171,11 +171,9 @@ export async function markInvoiceAsPaid(invoiceId: string, status: InvoiceStatus
         updatedAt: new Date(), 
       }
     });
-    
-    setTimeout(() => {
-      revalidatePath("/dashboard/invoices");
-    }, 0);
-    
+      
+    revalidatePath("/dashboard/invoices");
+
     return { success: "Invoice status updated." };
   } catch (error) {
     console.error("Error marking invoice status:", error);
