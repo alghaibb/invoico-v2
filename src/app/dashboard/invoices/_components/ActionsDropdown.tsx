@@ -42,14 +42,14 @@ async function handleMarkAsPaid() {
   const previousStatus = optimisticStatus;
   setOptimisticStatus("PAID");
 
-  const result = await markInvoiceAsPaid(invoiceId, "PAID");
-
-  if (result?.error) {
-    setOptimisticStatus(previousStatus);
-    toast.error(result.error);
-  } else if (result?.success) {
-    toast.success(result.success);
-  }
+  markInvoiceAsPaid(invoiceId, "PAID").then((result) => {
+    if (result?.error) {
+      setOptimisticStatus(previousStatus);
+      toast.error(result.error);
+    } else if (result?.success) {
+      toast.success(result.success);
+    }
+  });
 }
 
   return (
