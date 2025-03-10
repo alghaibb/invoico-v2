@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button, LoadingButton } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -35,6 +34,7 @@ import {
 } from "@/validations/invoice/create-invoice-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon, Plus, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -56,6 +56,7 @@ export default function CreateInvoiceForm({
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currency, setCurrency] = useState<Currency>("AUD");
   const [selectedTax, setSelectedTax] = useState(10);
+  const router = useRouter();
 
   const form = useForm<InvoiceValues>({
     resolver: zodResolver(invoiceSchema),
@@ -128,7 +129,6 @@ export default function CreateInvoiceForm({
                 <FormItem>
                   <div className="flex flex-col gap-1 w-fit">
                     <div className="flex items-center gap-4">
-                      <Badge variant="secondary">Draft</Badge>
                       <FormControl>
                         <Input
                           {...field}
@@ -154,7 +154,7 @@ export default function CreateInvoiceForm({
                 <FormItem>
                   <div className="grid gap-6 md:grid-cols-3">
                     <div>
-                      <FormLabel className="text-primary">
+                      <FormLabel className="text-foreground">
                         Invoice No.
                       </FormLabel>
                       <FormControl>
@@ -247,7 +247,7 @@ export default function CreateInvoiceForm({
                       <FormControl>
                         <Input
                           {...field}
-                          placeholder="yourname@mail.com"
+                          placeholder="yourname@mail.com (optional)"
                           error={!!fieldState.error}
                         />
                       </FormControl>
@@ -264,7 +264,7 @@ export default function CreateInvoiceForm({
                       <FormControl>
                         <AutosizeTextarea
                           {...field}
-                          placeholder="Your Address"
+                          placeholder="Your Address (optional)"
                           value={field.value || ""}
                           onChange={(e) =>
                             field.onChange(e.target.value || null)
@@ -304,7 +304,7 @@ export default function CreateInvoiceForm({
                       <FormControl>
                         <Input
                           {...field}
-                          placeholder="client@mail.com"
+                          placeholder="client@mail.com (optional)"
                           error={!!fieldState.error}
                           value={field.value || ""}
                         />
@@ -322,7 +322,7 @@ export default function CreateInvoiceForm({
                       <FormControl>
                         <AutosizeTextarea
                           {...field}
-                          placeholder="Client Address"
+                          placeholder="Client Address (optional)"
                           value={field.value || ""}
                           onChange={(e) =>
                             field.onChange(e.target.value || null)
@@ -556,7 +556,7 @@ export default function CreateInvoiceForm({
             </div>
 
             <div className="flex justify-end mt-6">
-              <div className="w-1/3">
+              <div className="md:w-1/3 w-full">
                 <div className="flex justify-between py-2">
                   <span>Subtotal</span>
                   <span>
@@ -655,7 +655,15 @@ export default function CreateInvoiceForm({
               )}
             />
 
-            <div className="flex items-center justify-end mt-6">
+            <div className="flex items-center justify-between mt-6">
+              <Button
+                variant="outline"
+                onClick={() => router.push("/dashboard/invoices")}
+                type="button"
+              >
+                Cancel
+              </Button>
+
               <LoadingButton
                 type="submit"
                 loading={isPending}

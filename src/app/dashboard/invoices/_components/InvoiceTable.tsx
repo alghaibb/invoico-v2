@@ -74,58 +74,67 @@ export default async function InvoiceTable() {
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Invoice Number</TableHead>
-          <TableHead>Client</TableHead>
-          <TableHead>Amount</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Due Date</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map((invoice) => {
-          const invoiceDate = new Date(invoice.date);
-          const dueDate = new Date(invoiceDate);
-          dueDate.setDate(invoiceDate.getDate() + invoice.dueDate);
+    <div className="w-full overflow-x-auto">
+      <Table className="min-w-full table-auto">
+        <TableHeader className="bg-background sticky top-0 z-10">
+          <TableRow>
+            <TableHead className="whitespace-nowrap">Invoice Number</TableHead>
+            <TableHead className="whitespace-nowrap">Client</TableHead>
+            <TableHead className="whitespace-nowrap">Amount</TableHead>
+            <TableHead className="whitespace-nowrap">Status</TableHead>
+            <TableHead className="whitespace-nowrap">Due Date</TableHead>
+            <TableHead className="whitespace-nowrap text-right">
+              Actions
+            </TableHead>
+          </TableRow>
+        </TableHeader>
 
-          const badgeVariant =
-            invoice.status === "PAID"
-              ? "success"
-              : invoice.status === "OVERDUE"
-                ? "destructive"
-                : "default";
+        <TableBody>
+          {data.map((invoice) => {
+            const invoiceDate = new Date(invoice.date);
+            const dueDate = new Date(invoiceDate);
+            dueDate.setDate(invoiceDate.getDate() + invoice.dueDate);
 
-          return (
-            <TableRow key={invoice.id}>
-              <TableCell>{invoice.invoiceNumber}</TableCell>
-              <TableCell>{invoice.clientName}</TableCell>
-              <TableCell>
-                {formatCurrency({
-                  amount: Number(invoice.total.toFixed(2)),
-                  currency: invoice.currency as Currency,
-                })}
-              </TableCell>
-              <TableCell>
-                <Badge variant={badgeVariant}>{invoice.status}</Badge>
-              </TableCell>
-              <TableCell>
-                {new Intl.DateTimeFormat("en-US", {
-                  dateStyle: "medium",
-                }).format(dueDate)}
-              </TableCell>
-              <TableCell className="text-right">
-                <ActionsDropdown
-                  invoiceId={invoice.id}
-                  initialStatus={invoice.status}
-                />
-              </TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+            const badgeVariant =
+              invoice.status === "PAID"
+                ? "success"
+                : invoice.status === "OVERDUE"
+                  ? "destructive"
+                  : "secondary";
+
+            return (
+              <TableRow key={invoice.id} className="w-max">
+                <TableCell className="whitespace-nowrap">
+                  {invoice.invoiceNumber}
+                </TableCell>
+                <TableCell className="whitespace-nowrap">
+                  {invoice.clientName}
+                </TableCell>
+                <TableCell className="whitespace-nowrap">
+                  {formatCurrency({
+                    amount: Number(invoice.total.toFixed(2)),
+                    currency: invoice.currency as Currency,
+                  })}
+                </TableCell>
+                <TableCell className="whitespace-nowrap">
+                  <Badge variant={badgeVariant}>{invoice.status}</Badge>
+                </TableCell>
+                <TableCell className="whitespace-nowrap">
+                  {new Intl.DateTimeFormat("en-US", {
+                    dateStyle: "medium",
+                  }).format(dueDate)}
+                </TableCell>
+                <TableCell className="whitespace-nowrap text-right">
+                  <ActionsDropdown
+                    invoiceId={invoice.id}
+                    initialStatus={invoice.status}
+                  />
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

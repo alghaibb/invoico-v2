@@ -18,7 +18,7 @@ import {
   Trash,
 } from "lucide-react";
 import Link from "next/link";
-import { useOptimistic, useState } from "react";
+import { useOptimistic, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { markInvoiceAsPaid } from "../actions";
 import DeleteInvoiceModal from "./DeleteInvoiceModal";
@@ -35,22 +35,26 @@ export default function ActionsDropdown({
 }: ActionsDropdownProps) {
   const [isSendModalOpen, setIsSendModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  
-const [optimisticStatus, setOptimisticStatus] = useOptimistic<InvoiceStatus>(initialStatus);
+  const [isPending, startTransition] = useTransition();
 
-async function handleMarkAsPaid() {
-  const previousStatus = optimisticStatus;
-  setOptimisticStatus("PAID");
+  const [optimisticStatus, setOptimisticStatus] =
+    useOptimistic<InvoiceStatus>(initialStatus);
 
-  markInvoiceAsPaid(invoiceId, "PAID").then((result) => {
-    if (result?.error) {
-      setOptimisticStatus(previousStatus);
-      toast.error(result.error);
-    } else if (result?.success) {
-      toast.success(result.success);
-    }
-  });
-}
+  async function handleMarkAsPaid() {
+    const previousStatus = optimisticStatus;
+
+    startTransition(() => {
+      setOptimisticStatus("PAID");
+      markInvoiceAsPaid(invoiceId, "PAID").then((result) => {
+        if (result?.error) {
+          setOptimisticStatus(previousStatus);
+          toast.error(result.error);
+        } else if (result?.success) {
+          toast.success(result.success);
+        }
+      });
+    });
+  }
 
   return (
     <>
@@ -66,7 +70,7 @@ async function handleMarkAsPaid() {
               href={`/dashboard/invoices/${invoiceId}`}
               className="flex items-center gap-2"
             >
-              <Pencil className="size-4 text-primary" />
+              <Pencil className="size-4 text-foreground" />
               <span>Edit Invoice</span>
             </Link>
           </DropdownMenuItem>
@@ -93,19 +97,23 @@ async function handleMarkAsPaid() {
               <span>Send Invoice</span>
             </div>
           </DropdownMenuItem>
-          
+
           <DropdownMenuItem
-  onClick={handleMarkAsPaid}
-  disabled={optimisticStatus === "PAID"}
-  className="flex items-center gap-2 cursor-pointer"
->
-  <CheckCircle className={`size-4 ${
-    optimisticStatus === "PAID" ? "text-green-600" : "text-green-500"
-  }`} />
-  <span>
-    {optimisticStatus === "PAID" ? "Marked as Paid" : "Mark as Paid"}
-  </span>
-</DropdownMenuItem>
+            onClick={handleMarkAsPaid}
+            disabled={optimisticStatus === "PAID" || isPending}
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <CheckCircle
+              className={`size-4 ${
+                optimisticStatus === "PAID"
+                  ? "text-green-600"
+                  : "text-green-500"
+              }`}
+            />
+            <span>
+              {optimisticStatus === "PAID" ? "Marked as Paid" : "Mark as Paid"}
+            </span>
+          </DropdownMenuItem>
 
           <DropdownMenuSeparator />
 

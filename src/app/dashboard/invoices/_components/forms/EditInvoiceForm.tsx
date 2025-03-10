@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button, LoadingButton } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -159,7 +158,6 @@ export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
                 <FormItem>
                   <div className="flex flex-col gap-1 w-fit">
                     <div className="flex items-center gap-4">
-                      <Badge variant="secondary">Draft</Badge>
                       <FormControl>
                         <Input
                           {...field}
@@ -185,7 +183,7 @@ export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
                 <FormItem>
                   <div className="grid gap-6 md:grid-cols-3">
                     <div>
-                      <FormLabel className="text-primary">
+                      <FormLabel className="text-foreground">
                         Invoice No.
                       </FormLabel>
                       <FormControl>
@@ -278,7 +276,7 @@ export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
                       <FormControl>
                         <Input
                           {...field}
-                          placeholder="yourname@mail.com"
+                          placeholder="yourname@mail.com (optional)"
                           error={!!fieldState.error}
                         />
                       </FormControl>
@@ -295,7 +293,7 @@ export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
                       <FormControl>
                         <AutosizeTextarea
                           {...field}
-                          placeholder="Your Address"
+                          placeholder="Your Address (optional)"
                           value={field.value || ""}
                           onChange={(e) =>
                             field.onChange(e.target.value || null)
@@ -335,7 +333,7 @@ export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
                       <FormControl>
                         <Input
                           {...field}
-                          placeholder="client@mail.com"
+                          placeholder="client@mail.com (optional)"
                           error={!!fieldState.error}
                           value={field.value || ""}
                         />
@@ -353,7 +351,7 @@ export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
                       <FormControl>
                         <AutosizeTextarea
                           {...field}
-                          placeholder="Client Address"
+                          placeholder="Client Address (optional)"
                           value={field.value || ""}
                           onChange={(e) =>
                             field.onChange(e.target.value || null)

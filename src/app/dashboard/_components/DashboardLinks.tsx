@@ -6,7 +6,11 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function DashboardLinks() {
+interface DashboardLinkProps {
+  closeSheet?: () => void;
+}
+
+export default function DashboardLinks({ closeSheet }: DashboardLinkProps) {
   const pathname = usePathname();
 
   return (
@@ -15,6 +19,7 @@ export default function DashboardLinks() {
         <Button
           asChild
           key={link.id}
+          onClick={closeSheet}
           variant="ghost"
           className={cn(
             "items-center gap-3 justify-start transition-all",

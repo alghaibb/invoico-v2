@@ -7,20 +7,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { getSession } from "@/utils/session";
-import { Menu, User2 } from "lucide-react";
+import { User2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { signOut } from "../(auth)/(sign-out)/actions";
 import logo from "../../../public/logo.png";
 import DashboardLinks from "./_components/DashboardLinks";
+import MobileSidebar from "./_components/MobileNavigation";
 
 export default async function DashboardLayout({
   children,
@@ -35,7 +30,7 @@ export default async function DashboardLayout({
 
   return (
     <>
-      <div className="grid min-h-screen w-full md:grid-cols-[240px_1fr] lg:grid-cols-[300px_1fr]">
+      <div className="min-h-screen w-full flex flex-col md:grid md:grid-cols-[240px_1fr] lg:grid-cols-[300px_1fr]">
         {/* Sidebar */}
         <div className="hidden border-r bg-muted/40 md:block">
           <div className="flex flex-col h-full max-h-screen gap-4">
@@ -45,7 +40,7 @@ export default async function DashboardLayout({
                   src={logo}
                   alt="logo"
                   width={140}
-                  height={140} 
+                  height={140}
                   className="h-12 w-auto lg:h-14"
                 />
               </Link>
@@ -62,22 +57,7 @@ export default async function DashboardLayout({
         {/* Main Content */}
         <div className="flex flex-col">
           <header className="flex h-16 items-center gap-4 border-b bg-muted/40 px-6 lg:h-[72px] lg:px-8">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon" className="md:hidden">
-                  <Menu className="size-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left">
-                <SheetTitle className="sr-only">
-                  Dashboard Mobile Navigation
-                </SheetTitle>
-
-                <nav className="grid gap-4 mt-10">
-                  <DashboardLinks />
-                </nav>
-              </SheetContent>
-            </Sheet>
+            <MobileSidebar firstName={session.user.firstName} />
 
             {/* User Dropdown */}
             <div className="flex items-center ml-auto">
