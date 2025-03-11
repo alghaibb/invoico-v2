@@ -48,6 +48,10 @@ export default async function DashboardLayout({
 
             <div className="flex-1">
               <nav className="grid items-start px-4 text-sm font-medium lg:px-6">
+                <h1 className="hidden lg:block text-lg lg:text-xl font-semibold mb-4 lg:mb-6 text-left">
+                  <span className="text-primary">{session.user.firstName}</span>
+                  , your invoices await. Let&apos;s get started!
+                </h1>
                 <DashboardLinks />
               </nav>
             </div>

@@ -8,7 +8,7 @@ export default function SignInPage() {
   return (
     <div className="md:p-8">
       <h2 className="text-2xl md:text-center">
-        Welcome Back to <span className="font-bold text-primary">Invoicio</span>
+        Welcome Back to <span className="font-bold text-primary">Invoico</span>
       </h2>
       <p className="mt-2 text-sm text-muted-foreground md:text-center">
         Sign in to continue. You can also sign in with Google or Facebook.

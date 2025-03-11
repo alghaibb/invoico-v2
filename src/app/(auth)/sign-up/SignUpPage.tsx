@@ -8,7 +8,7 @@ export default function SignUpPage() {
   return (
     <div className="md:p-8">
       <h2 className="text-2xl md:text-center">
-        Welcome to <span className="font-bold text-primary">Invoicio</span>
+        Welcome to <span className="font-bold text-primary">Invoico</span>
       </h2>
       <p className="mt-2 text-sm text-muted-foreground md:text-center">
         Sign up to get started. You can also sign up with Google or Facebook.

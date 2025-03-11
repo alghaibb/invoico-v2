@@ -20,7 +20,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={"antialiased mx-auto min-h-screen w-full bg-background"}>
         <main className="flex flex-col min-h-screen">
-          <div className="flex-grow">{children}</div>
+          <div className="flex-grow">
+            {children}
+          </div>
         </main>
         <Toaster richColors closeButton theme="light" />
       </body>
