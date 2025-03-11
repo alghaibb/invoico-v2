@@ -17,13 +17,15 @@ export default function Hero() {
         />
       </div>
 
-      <div className="relative z-10 max-w-3xl">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight">
+      <div className="relative z-10 max-w-3xl text-center">
+        <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter">
           Empower Your Business with{" "}
-          <span className="text-primary">Effortless Invoicing</span>
+          <span className="bg-gradient-to-r from-orange-500 via-amber-400 to-primary bg-clip-text text-transparent">
+            Effortless Invoicing
+          </span>
         </h1>
 
-        <p className="mt-4 text-lg sm:text-xl text-muted-foreground">
+        <p className="mt-4 sm:text-xl text-muted-foreground">
           Create, manage, and send invoices with ease.{" "}
           <span className="text-primary font-medium">
             No hassle. No stress.
@@ -31,7 +33,7 @@ export default function Hero() {
           Just streamlined invoicing for freelancers and businesses.
         </p>
 
-        <div className="mt-6 flex justify-center lg:justify-start gap-4">
+        <div className="mt-8 flex items-center justify-center gap-4">
           <Button asChild size="lg">
             <Link href="/sign-up">Get Started</Link>
           </Button>
