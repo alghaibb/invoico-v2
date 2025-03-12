@@ -14,3 +14,16 @@ export const dashboardLinks = [
     icon: ReceiptIcon,
   },
 ]
+
+export const navbarLinks = [
+  {
+    id: 0,
+    name: "Dashboard",
+    href: "/dashboard",
+  },
+  {
+    id: 1,
+    name: "Invoices",
+    href: "/dashboard/invoices",
+  },
+]

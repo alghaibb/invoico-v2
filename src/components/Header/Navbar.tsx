@@ -1,3 +1,4 @@
+import { navbarLinks } from "@/lib/constants";
 import { User } from "@/types/user";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,10 +11,23 @@ export default function Navbar({ user }: { user?: User }) {
       <Link href="/">
         <Image src={Logo} alt="Logo" width={100} height={100} />
       </Link>
+
+      <div className="flex gap-4">
+        {navbarLinks.map((link) => (
+          <Button
+            asChild
+            key={link.id}
+            variant="linkHover2"
+            className="text-foreground"
+          >
+            <Link href={link.href}>{link.name}</Link>
+          </Button>
+        ))}
+      </div>
       <div>
         {user ? (
           <Button asChild>
-            <Link href="/dashboard/invoices/create">Create Invoice</Link>
+            <Link href="/dashboard/invoices">View Your Invoices</Link>
           </Button>
         ) : (
           <div className="flex gap-4">

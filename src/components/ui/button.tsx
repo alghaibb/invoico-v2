@@ -35,7 +35,7 @@ const buttonVariants = cva(
         linkHover1:
           "relative after:absolute after:bg-primary after:bottom-2 after:h-[1px] after:w-2/3 after:origin-bottom-left after:scale-x-100 hover:after:origin-bottom-right hover:after:scale-x-0 after:transition-transform after:ease-in-out after:duration-300 text-primary dark:text-secondary-foreground",
         linkHover2:
-          "relative after:absolute after:bg-primary after:bottom-2 after:h-[1px] after:w-2/3 after:origin-bottom-right after:scale-x-0 hover:after:origin-bottom-left hover:after:scale-x-100 after:transition-transform after:ease-in-out after:duration-300 text-primary dark:text-secondary-foreground",
+          "relative after:absolute after:bg-primary after:bottom-2 after:h-[2px] after:w-2/3 after:origin-bottom-right after:scale-x-0 hover:after:origin-bottom-left hover:after:scale-x-100 after:transition-transform after:ease-in-out after:duration-300 text-primary dark:text-secondary-foreground",
         basic: "hover:text-foreground/50 duration-200",
         modernHover:
           "bg-background text-primary border border-primary font-semibold shadow-none hover:translate-y-[-4px] hover:translate-x-[-2px] hover:shadow-[2px_5px_0_0_rgba(74,115,235,1)] active:translate-y-[2px] active:translate-x-[1px] active:shadow-[2px_5px_0_0_rgba(66,115,244,1)] transition-all duration-300 dark:text-foreground",
