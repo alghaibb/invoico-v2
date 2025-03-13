@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Logo from "../../../public/logo.png";
 import { Button } from "../ui/button";
+import MobileNav from "./MobileNav";
 
 export default function Navbar({ user }: { user?: User }) {
   return (
@@ -12,7 +13,7 @@ export default function Navbar({ user }: { user?: User }) {
         <Image src={Logo} alt="Logo" width={100} height={100} />
       </Link>
 
-      <div className="flex gap-4">
+      <div className="md:flex gap-4 hidden">
         {navbarLinks.map((link) => (
           <Button
             asChild
@@ -24,7 +25,10 @@ export default function Navbar({ user }: { user?: User }) {
           </Button>
         ))}
       </div>
-      <div>
+
+      <MobileNav user={user} />
+
+      <div className="md:flex hidden">
         {user ? (
           <Button asChild>
             <Link href="/dashboard/invoices">View Your Invoices</Link>
