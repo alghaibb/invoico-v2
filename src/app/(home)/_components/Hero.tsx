@@ -41,9 +41,7 @@ export default async function Hero() {
         <div className="mt-8 flex items-center justify-center gap-4 flex-col sm:flex-row">
           {user ? (
             <RainbowButton asChild className="rounded-md w-full sm:w-auto">
-              <Link href="/dashboard/invoices/create">
-                Create Your First Invoice
-              </Link>
+              <Link href="/dashboard/invoices/create">Create An Invoice</Link>
             </RainbowButton>
           ) : (
             <RainbowButton asChild className="rounded-md w-full sm:w-auto">

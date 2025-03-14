@@ -13,6 +13,7 @@ import { User } from "@/types/user";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 export default function MobileNav({ user }: { user?: User }) {
   return (
@@ -29,18 +30,24 @@ export default function MobileNav({ user }: { user?: User }) {
           side="left"
           className="w-3/4 sm:max-w-sm flex flex-col justify-between h-full"
         >
-          <div className="py-6">
-            <p className="font-medium text-center underline underline-offset-4 text-xl">
+          <div className="mt-4">
+            <p className="font-medium text-center text-xl">
               Welcome, {user ? user.firstName : "Guest"}!
             </p>
           </div>
 
-          <nav className="space-y-2 flex flex-col gap-2">
+          <Separator className="my-1" />
+
+          <nav className="flex flex-col">
             {navbarLinks.map((link) => (
               <SheetClose key={link.id} asChild>
-                <Button variant="outline" asChild>
-                  <Link href={link.href}>{link.name}</Link>
-                </Button>
+                <Link
+                  href={link.href}
+                  className="px-4 py-3 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {link.name}
+                  <Separator className="my-2" />
+                </Link>
               </SheetClose>
             ))}
           </nav>

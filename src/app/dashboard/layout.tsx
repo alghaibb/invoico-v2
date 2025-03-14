@@ -7,6 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
 import { getSession } from "@/utils/session";
 import { User2 } from "lucide-react";
 import Image from "next/image";
@@ -31,7 +32,6 @@ export default async function DashboardLayout({
   return (
     <>
       <div className="min-h-screen w-full flex flex-col md:grid md:grid-cols-[240px_1fr] lg:grid-cols-[300px_1fr]">
-        {/* Sidebar */}
         <div className="hidden border-r bg-muted/40 md:block">
           <div className="flex flex-col h-full max-h-screen gap-4">
             <div className="h-16 flex items-center border-b px-6 lg:h-[72px] lg:px-8">
@@ -48,7 +48,17 @@ export default async function DashboardLayout({
 
             <div className="flex-1">
               <nav className="grid items-start px-4 text-sm font-medium lg:px-6">
-                <h1 className="hidden lg:block text-lg lg:text-xl font-semibold mb-4 lg:mb-6 text-left">
+                <Button
+                  asChild
+                  variant="ghost"
+                  className=" flex items-center text-sm font-medium text-muted-foreground"
+                >
+                  <Link href="/"> ← Back to Home</Link>
+                </Button>
+
+                <Separator />
+
+                <h1 className="hidden lg:block text-lg lg:text-xl font-semibold mb-4 lg:mb-6 text-left mt-2">
                   <span className="text-primary">{session.user.firstName}</span>
                   , your invoices await. Let&apos;s get started!
                 </h1>
@@ -58,12 +68,10 @@ export default async function DashboardLayout({
           </div>
         </div>
 
-        {/* Main Content */}
         <div className="flex flex-col">
           <header className="flex h-16 items-center gap-4 border-b bg-muted/40 px-6 lg:h-[72px] lg:px-8">
             <MobileSidebar firstName={session.user.firstName} />
 
-            {/* User Dropdown */}
             <div className="flex items-center ml-auto">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

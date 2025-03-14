@@ -9,6 +9,7 @@ import {
   ResponsiveModalHeader,
   ResponsiveModalTitle,
 } from "@/components/ui/responsive-modal";
+import { useModal } from "@/hooks/useModal";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -16,18 +17,15 @@ import { deleteInvoice } from "../actions";
 
 interface DeleteInvoiceModalProps {
   invoiceId: string;
-  open: boolean;
-  onClose: () => void;
 }
 
 export default function DeleteInvoiceModal({
   invoiceId,
-  open,
-  onClose,
 }: DeleteInvoiceModalProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { deleteInvoiceModal, closeDeleteInvoiceModal } = useModal();
 
   async function handleDelete() {
     setError(null);
@@ -41,13 +39,16 @@ export default function DeleteInvoiceModal({
         toast.success(result.success);
         router.push("/dashboard/invoices");
         router.refresh();
-        onClose();
+        closeDeleteInvoiceModal();
       }
     });
   }
 
   return (
-    <ResponsiveModal open={open} onOpenChange={onClose}>
+    <ResponsiveModal
+      open={deleteInvoiceModal}
+      onOpenChange={closeDeleteInvoiceModal}
+    >
       <ResponsiveModalContent>
         <ResponsiveModalHeader>
           <ResponsiveModalTitle>Delete Invoice</ResponsiveModalTitle>
@@ -61,12 +62,15 @@ export default function DeleteInvoiceModal({
             </Alert>
           )}
           <p className="text-sm text-muted-foreground">
-            Are you sure you want to delete this invoice? This action cannot be undone.
+            Are you sure you want to delete this invoice? This action cannot be
+            undone.
           </p>
         </div>
 
         <ResponsiveModalFooter className="gap-3 md:gap-1">
-          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button variant="outline" onClick={closeDeleteInvoiceModal}>
+            Cancel
+          </Button>
           <LoadingButton
             onClick={handleDelete}
             loading={isPending}

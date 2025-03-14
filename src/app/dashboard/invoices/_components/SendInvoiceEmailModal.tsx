@@ -18,6 +18,7 @@ import {
   ResponsiveModalHeader,
   ResponsiveModalTitle,
 } from "@/components/ui/responsive-modal";
+import { useModal } from "@/hooks/useModal";
 import {
   sendInvoiceSchema,
   SendInvoiceValues,
@@ -30,19 +31,14 @@ import { sendInvoice } from "../actions";
 
 interface SendInvoiceModalProps {
   invoiceId: string;
-  open: boolean;
-  onClose: () => void;
 }
 
-export default function SendInvoiceModal({
-  invoiceId,
-  open,
-  onClose,
-}: SendInvoiceModalProps) {
+export default function SendInvoiceModal({ invoiceId }: SendInvoiceModalProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [cooldown, setCooldown] = useState<number>(0);
+  const { sendInvoiceModal, closeSendInvoiceModal } = useModal();
 
   const form = useForm<SendInvoiceValues>({
     resolver: zodResolver(sendInvoiceSchema),
@@ -109,9 +105,11 @@ export default function SendInvoiceModal({
   }
 
   return (
-    <ResponsiveModal open={open} onOpenChange={onClose}>
+    <ResponsiveModal
+      open={sendInvoiceModal}
+      onOpenChange={closeSendInvoiceModal}
+    >
       <ResponsiveModalContent>
-        {/* ✅ The built-in close button (X) is already inside ResponsiveModalContent */}
         <ResponsiveModalHeader>
           <ResponsiveModalTitle>Send Invoice</ResponsiveModalTitle>
         </ResponsiveModalHeader>
@@ -151,8 +149,7 @@ export default function SendInvoiceModal({
             />
 
             <ResponsiveModalFooter className="gap-3 md:gap-1">
-              {/* ✅ Only one cancel button now */}
-              <Button variant="outline" onClick={onClose}>
+              <Button variant="outline" onClick={closeSendInvoiceModal}>
                 Cancel
               </Button>
               <LoadingButton

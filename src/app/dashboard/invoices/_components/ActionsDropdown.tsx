@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useModal } from "@/hooks/useModal";
 import { InvoiceStatus } from "@prisma/client";
 import {
   CheckCircle,
@@ -18,7 +19,7 @@ import {
   Trash,
 } from "lucide-react";
 import Link from "next/link";
-import { useOptimistic, useState, useTransition } from "react";
+import { useOptimistic, useTransition } from "react";
 import { toast } from "sonner";
 import { markInvoiceAsPaid } from "../actions";
 import DeleteInvoiceModal from "./DeleteInvoiceModal";
@@ -33,8 +34,7 @@ export default function ActionsDropdown({
   invoiceId,
   initialStatus,
 }: ActionsDropdownProps) {
-  const [isSendModalOpen, setIsSendModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const { openSendInvoiceModal, openDeleteInvoiceModal } = useModal();
   const [isPending, startTransition] = useTransition();
 
   const [optimisticStatus, setOptimisticStatus] =
@@ -89,7 +89,7 @@ export default function ActionsDropdown({
           <DropdownMenuSeparator />
 
           <DropdownMenuItem
-            onClick={() => setIsSendModalOpen(true)}
+            onClick={openSendInvoiceModal}
             className="flex items-center gap-2"
           >
             <div className="flex items-center gap-2 cursor-default">
@@ -118,7 +118,7 @@ export default function ActionsDropdown({
           <DropdownMenuSeparator />
 
           <DropdownMenuItem
-            onClick={() => setIsDeleteModalOpen(true)}
+            onClick={openDeleteInvoiceModal}
             className="flex items-center gap-2 cursor-default"
           >
             <Trash className="size-4 text-destructive" />
@@ -127,17 +127,9 @@ export default function ActionsDropdown({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <SendInvoiceModal
-        open={isSendModalOpen}
-        invoiceId={invoiceId}
-        onClose={() => setIsSendModalOpen(false)}
-      />
+      <SendInvoiceModal invoiceId={invoiceId} />
 
-      <DeleteInvoiceModal
-        open={isDeleteModalOpen}
-        invoiceId={invoiceId}
-        onClose={() => setIsDeleteModalOpen(false)}
-      />
+      <DeleteInvoiceModal invoiceId={invoiceId} />
     </>
   );
 }
