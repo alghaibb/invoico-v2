@@ -1,4 +1,4 @@
-import { HomeIcon, ReceiptIcon } from "lucide-react";
+import { BarChart, CheckCircle, FileText, HomeIcon, Mail, ReceiptIcon } from "lucide-react";
 
 export const dashboardLinks = [
   {
@@ -27,3 +27,37 @@ export const navbarLinks = [
     href: "/dashboard/invoices",
   },
 ]
+
+export type FeatureType = {
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  title: string;
+  description: string;
+};
+
+export const features: FeatureType[] = [
+  {
+    icon: FileText,
+    title: "Instant Invoice Creation",
+    description:
+      "Create and auto-save invoices effortlessly with our streamlined system.",
+  },
+  {
+    icon: Mail,
+    title: "One-Click Email Sending",
+    description:
+      "Send invoices directly to clients with a secure download link.",
+  },
+  {
+    icon: CheckCircle,
+    title: "Real-Time Payment Status",
+    description:
+      "Mark invoices as paid instantly with Optimistic UI—no page refresh needed.",
+  },
+  {
+    icon: BarChart,
+    title: "Smart Analytics & Insights",
+    description:
+      "Track earnings, pending payments, and optimize cash flow with analytics.",
+  },
+];
+
