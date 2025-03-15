@@ -1,4 +1,4 @@
-import { BarChart, CheckCircle, FileText, HomeIcon, Mail, ReceiptIcon } from "lucide-react";
+import { BarChart, CheckCircle, HomeIcon, Mail, ReceiptIcon } from "lucide-react";
 
 export const dashboardLinks = [
   {
@@ -35,12 +35,6 @@ export type FeatureType = {
 };
 
 export const features: FeatureType[] = [
-  {
-    icon: FileText,
-    title: "Instant Invoice Creation",
-    description:
-      "Create and auto-save invoices effortlessly with our streamlined system.",
-  },
   {
     icon: Mail,
     title: "One-Click Email Sending",
