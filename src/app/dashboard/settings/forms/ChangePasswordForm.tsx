@@ -47,8 +47,6 @@ export default function ChangePasswordForm({ userId }: { userId: string }) {
   }
   return (
     <Card className="w-full mx-auto max-w-2xl">
-      {" "}
-      {/* max-w-2xl ensures the width */}
       <CardContent className="p-6 space-y-6">
         <h2 className="text-3xl font-semibold text-center">Change Password</h2>
         <p className="text-muted-foreground text-center text-sm">
@@ -62,7 +60,9 @@ export default function ChangePasswordForm({ userId }: { userId: string }) {
               name="oldPassword"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel>Current Password</FormLabel>
+                  <FormLabel className="text-foreground">
+                    Current Password
+                  </FormLabel>
                   <FormControl>
                     <PasswordInput
                       {...field}
@@ -80,7 +80,9 @@ export default function ChangePasswordForm({ userId }: { userId: string }) {
               name="newPassword"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel>New Password</FormLabel>
+                  <FormLabel className="text-foreground">
+                    New Password
+                  </FormLabel>
                   <FormControl>
                     <PasswordInput
                       {...field}
@@ -98,7 +100,9 @@ export default function ChangePasswordForm({ userId }: { userId: string }) {
               name="confirmNewPassword"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel>Confirm New Password</FormLabel>
+                  <FormLabel className="text-foreground">
+                    Confirm New Password
+                  </FormLabel>
                   <FormControl>
                     <PasswordInput
                       {...field}

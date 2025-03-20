@@ -1,26 +1,33 @@
 "use client";
 
-import { EyeIcon, EyeOffIcon } from "lucide-react";
-import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import * as React from "react";
 
-// ✅ Define the type for the PasswordInput component
-interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface PasswordInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: boolean;
 }
 
 const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
   ({ className, error, ...props }, ref) => {
     const [showPassword, setShowPassword] = React.useState(false);
-    const disabled = props.value === "" || props.value === undefined || props.disabled;
+    const disabled =
+      props.value === "" || props.value === undefined || props.disabled;
 
     return (
       <div className="relative">
         <Input
           type={showPassword ? "text" : "password"}
-          className={cn("hide-password-toggle pr-10", className, error ? "border-red-500" : "")}
+          className={cn(
+            "hide-password-toggle pr-10",
+            className,
+            error
+              ? "border-destructive bg-destructive/10 text-destructive placeholder:text-destructive focus-visible:ring-destructive/50"
+              : ""
+          )}
           ref={ref}
           {...props}
         />
