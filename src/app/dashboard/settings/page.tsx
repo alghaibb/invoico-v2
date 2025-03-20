@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   const session = await getSession();
-  const userId = session?.user.id || "";
+  const userId = session?.user.id as string;
 
   return (
     <div className="flex flex-col items-center justify-center w-full py-10 px-4">

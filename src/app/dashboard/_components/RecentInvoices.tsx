@@ -1,9 +1,16 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import prisma from "@/lib/prisma";
 import { Currency } from "@/types/currency";
 import { formatCurrency } from "@/utils/format-currency";
 import { getSession } from "@/utils/session";
+import ClipboardCopyButton from "./ClipboardCopyButton";
 
 async function getData(userId: string) {
   const data = await prisma.invoice.findMany({
@@ -19,7 +26,6 @@ async function getData(userId: string) {
     take: 7,
   });
 
-  // Convert Decimal to Number before returning
   return data.map((invoice) => ({
     ...invoice,
     total: Number(invoice.total),
@@ -56,11 +62,22 @@ export default async function RecentInvoices() {
               </Avatar>
 
               {hasEmail ? (
-                <div className="hidden sm:block w-40 overflow-hidden relative">
-                  <div className="text-sm text-muted-foreground whitespace-nowrap transition-transform duration-500 ease-linear group-hover:animate-scroll">
-                    {item.clientEmail}
+                <TooltipProvider>
+                  <div className="flex items-center">
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <div className="w-20 truncate text-sm text-muted-foreground lg:w-20 xl:w-40 cursor-default">
+                          {item.clientEmail}
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <span>{item.clientEmail}</span>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <ClipboardCopyButton email={item.clientEmail as string}/>
                   </div>
-                </div>
+                </TooltipProvider>
               ) : (
                 <p className="text-sm text-muted-foreground hidden sm:block w-40">
                   No email
