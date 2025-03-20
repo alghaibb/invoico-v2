@@ -1,6 +1,11 @@
 import { getSession } from "@/utils/session";
 import { redirect } from "next/navigation";
 import ProfileForm from "./ProfileForm";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Profile",
+};
 
 export default async function Page() {
   const session = await getSession();

@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { getSession } from "@/utils/session";
-import { updateUserSchema, UpdateUserValues } from "@/validations/user-schema";
+import { updateUserSchema, UpdateUserValues } from "@/validations/user/user-schema";
 import { revalidatePath } from "next/cache";
 
 export async function updateUserProfile(values: UpdateUserValues) {

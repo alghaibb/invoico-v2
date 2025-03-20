@@ -11,7 +11,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { updateUserSchema, UpdateUserValues } from "@/validations/user-schema";
+import {
+  updateUserSchema,
+  UpdateUserValues,
+} from "@/validations/user/user-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -47,7 +50,7 @@ export default function ProfileForm({
       if (result?.error) {
         toast.error(result.error);
       } else {
-        toast.success("Profile updated successfully!");
+        toast.success(result.success);
         form.reset(values);
       }
     });
