@@ -1,6 +1,6 @@
 import { getSession } from "@/utils/session";
 import { Metadata } from "next";
-import ChangePasswordForm from "./_forms/ChangePasswordForm";
+import ChangePasswordForm from "./forms/ChangePasswordForm";
 
 export const metadata: Metadata = {
   title: "Settings",
