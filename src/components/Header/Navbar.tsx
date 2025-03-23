@@ -1,3 +1,4 @@
+import SignOutButton from "@/app/(auth)/(sign-out)/_components/SignOutButton";
 import { navbarLinks } from "@/lib/constants";
 import { User } from "@/types/user";
 import Image from "next/image";
@@ -30,9 +31,13 @@ export default function Navbar({ user }: { user?: User }) {
 
       <div className="md:flex hidden">
         {user ? (
-          <Button asChild>
-            <Link href="/dashboard/invoices">View Your Invoices</Link>
-          </Button>
+          <div className="flex gap-4 items-center">
+            <Button asChild>
+              <Link href="/dashboard/invoices">View Your Invoices</Link>
+            </Button>
+
+            <SignOutButton />
+          </div>
         ) : (
           <div className="flex gap-4">
             <Button asChild variant="outlineSecondary">

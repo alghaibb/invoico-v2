@@ -4,16 +4,18 @@ export const signUpSchema = z.object({
   firstName: z
     .string()
     .min(2, { message: "First name must be at least 2 characters long" })
+    .trim()
     .regex(/^[a-zA-Z]+$/, { message: "First name can only contain letters" }),
 
   lastName: z
     .string()
     .min(2, { message: "Last name must be at least 2 characters long" })
+    .trim()
     .regex(/^[a-zA-Z]+$/, { message: "Last name can only contain letters" })
     .optional()
     .or(z.literal("")),
 
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z.string().email({ message: "Invalid email address" }).trim(),
 
   password: z
     .string()

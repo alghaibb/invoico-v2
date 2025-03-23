@@ -1,14 +1,32 @@
 "use client";
 
-import { LoadingButton } from "@/components/ui/button";
+import { buttonVariants, LoadingButton } from "@/components/ui/button";
 import { useTransition } from "react";
 import { signOut } from "../actions";
+import { VariantProps } from "class-variance-authority";
+
+type ButtonVariants = 
+  | "default" 
+  | "destructive" 
+  | "outline" 
+  | "outlineSecondary" 
+  | "secondary" 
+  | "ghost" 
+  | "link" 
+  | "expandIcon" 
+  | "ringHover" 
+  | "shine" 
+  | "gooeyRight" 
+  | "gooeyLeft" 
+  | "linkHover1" 
+  | "modernHover";
 
 interface SignOutProps {
   className?: string;
+  variant?: ButtonVariants;
 }
 
-export default function SignOutButton({ className }: SignOutProps) {
+export default function SignOutButton({ className, variant }: SignOutProps) {
   const [isPending, startTransition] = useTransition();
 
   function handleClick() {
@@ -23,6 +41,7 @@ export default function SignOutButton({ className }: SignOutProps) {
       loading={isPending}
       disabled={isPending}
       className={className}
+      variant={variant}
     >
       {isPending ? "Signing out" : "Sign out"}
     </LoadingButton>
