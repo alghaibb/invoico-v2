@@ -19,7 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { changePassword } from "../actions";
+import { changePassword } from "./actions";
 
 export default function ChangePasswordForm({ userId }: { userId: string }) {
   const [isPending, startTransition] = useTransition();
@@ -48,8 +48,10 @@ export default function ChangePasswordForm({ userId }: { userId: string }) {
   return (
     <Card className="w-full mx-auto max-w-2xl">
       <CardContent className="p-6 space-y-6">
-        <h2 className="text-3xl font-semibold text-center">Change Password</h2>
-        <p className="text-muted-foreground text-center text-sm">
+        <h2 className="text-3xl font-semibold md:text-start text-center">
+          Change Password
+        </h2>
+        <p className="text-muted-foreground text-sm md:text-start text-center">
           Secure your account by updating your password.
         </p>
 
@@ -115,15 +117,13 @@ export default function ChangePasswordForm({ userId }: { userId: string }) {
               )}
             />
 
-            <div className="flex justify-end">
-              <LoadingButton
-                type="submit"
-                loading={isPending}
-                className="w-full sm:w-auto"
-              >
-                {isPending ? "Updating..." : "Update Password"}
-              </LoadingButton>
-            </div>
+            <LoadingButton
+              type="submit"
+              loading={isPending}
+              className="w-full sm:w-auto"
+            >
+              {isPending ? "Updating..." : "Update Password"}
+            </LoadingButton>
           </form>
         </Form>
       </CardContent>

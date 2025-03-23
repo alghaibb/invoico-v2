@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import "./globals.css";
+import SubscriptionModal from "@/components/subscription/SubscriptionModal.tsx";
 
 export const metadata: Metadata = {
   title: {
@@ -22,6 +23,7 @@ export default function RootLayout({
         <main className="flex flex-col min-h-screen">
           <div className="flex-grow">
             {children}
+            <SubscriptionModal />
           </div>
         </main>
         <Toaster richColors closeButton theme="light" />
