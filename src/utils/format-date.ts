@@ -5,5 +5,5 @@ export function formatDate(date: Date | string): string {
     day: '2-digit' 
   };
 
-  return new Date(date).toLocaleDateString("en-US", options);
+  return new Intl.DateTimeFormat("en-US", options).format(new Date(date));
 }
