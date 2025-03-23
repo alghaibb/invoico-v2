@@ -1,24 +1,23 @@
 "use client";
 
-import { buttonVariants, LoadingButton } from "@/components/ui/button";
+import { LoadingButton } from "@/components/ui/button";
 import { useTransition } from "react";
 import { signOut } from "../actions";
-import { VariantProps } from "class-variance-authority";
 
-type ButtonVariants = 
-  | "default" 
-  | "destructive" 
-  | "outline" 
-  | "outlineSecondary" 
-  | "secondary" 
-  | "ghost" 
-  | "link" 
-  | "expandIcon" 
-  | "ringHover" 
-  | "shine" 
-  | "gooeyRight" 
-  | "gooeyLeft" 
-  | "linkHover1" 
+type ButtonVariants =
+  | "default"
+  | "destructive"
+  | "outline"
+  | "outlineSecondary"
+  | "secondary"
+  | "ghost"
+  | "link"
+  | "expandIcon"
+  | "ringHover"
+  | "shine"
+  | "gooeyRight"
+  | "gooeyLeft"
+  | "linkHover1"
   | "modernHover";
 
 interface SignOutProps {
