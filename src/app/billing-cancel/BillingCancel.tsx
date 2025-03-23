@@ -23,7 +23,7 @@ export default function BillingCancelClient() {
             variant="outlineSecondary"
             className="w-full md:w-auto"
           >
-            <Link href="/settings">Go to Settings</Link>
+            <Link href="/dashboard/settings">Go to Settings</Link>
           </Button>
           <Button className="w-full md:w-auto" onClick={openSubscriptionModal}>
             Try Again
