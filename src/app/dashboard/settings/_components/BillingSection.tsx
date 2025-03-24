@@ -38,10 +38,10 @@ export default async function BillingSection() {
           {subscription ? (
             <>
               {subscription.stripeCancelAtPeriodEnd && (
-                <p className="text-destructive">
-                  Your subscription will be canceled on {formatDate(subscription.stripeCurrentPeriodEnd, "MMMM dd, yyyy")}
-                </p>
-              )}
+  <p className="text-destructive">
+    Your subscription will be canceled on {formatDate(subscription.stripeCurrentPeriodEnd)}
+  </p>
+)}
               <ManageSubscriptionButton />
             </>
           ) : (

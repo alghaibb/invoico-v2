@@ -15,7 +15,7 @@ export default function BillingCancelClient() {
         </h1>
         <p className="text-muted-foreground">
           It looks like your subscription process was canceled. No worries! You
-          can always subscribe whenever you're ready.
+          can always subscribe whenever you&apos;re ready.
         </p>
         <div className="flex mt-4 items-center justify-center md:flex-row flex-col gap-4">
           <Button
