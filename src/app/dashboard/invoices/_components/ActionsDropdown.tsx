@@ -24,7 +24,6 @@ import { toast } from "sonner";
 import { markInvoiceAsPaid } from "../actions";
 import DeleteInvoiceModal from "./DeleteInvoiceModal";
 import SendInvoiceModal from "./SendInvoiceEmailModal";
-import { getUserSubscription } from "@/utils/get-user-subscription";
 
 interface ActionsDropdownProps {
   invoiceId: string;
