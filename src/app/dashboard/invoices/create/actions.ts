@@ -1,6 +1,9 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { getUserSubscription } from "@/utils/get-user-subscription";
+import { canCreateInvoice } from "@/utils/permissions";
+import { resetInvoiceCountIfNeeded } from "@/utils/reset-invoice-count";
 import { getSession } from "@/utils/session";
 import { invoiceSchema, InvoiceValues } from "@/validations/invoice/create-invoice-schema";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
@@ -16,6 +19,20 @@ export async function createInvoice(values: InvoiceValues) {
       throw new Error("Unauthorized: No user session found.");
     }
     const user = session.user.id;
+
+    await resetInvoiceCountIfNeeded(user);
+
+    const subscriptionType = await getUserSubscription(user);
+
+    const usageRecord = await prisma.userMonthlyInvoiceUsage.findUnique({
+      where: { userId: user },
+    });
+
+    const currentInvoiceCount = usageRecord?.invoiceCount ?? 0;
+
+    if (!canCreateInvoice(subscriptionType, currentInvoiceCount)) {
+      return { error: "You have reached the maximum number of invoices for your subscription." };
+    }
 
     await prisma.invoice.create({
       data: {
@@ -43,6 +60,11 @@ export async function createInvoice(values: InvoiceValues) {
           })),
         },
       },
+    });
+
+    await prisma.userMonthlyInvoiceUsage.update({
+      where: { userId: user },
+      data: { invoiceCount: currentInvoiceCount + 1 },
     });
 
     return redirect("/dashboard/invoices");

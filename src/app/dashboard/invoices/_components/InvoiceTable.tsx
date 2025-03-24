@@ -65,8 +65,8 @@ export default async function InvoiceTable() {
           <FileText className="w-16 h-16 mx-auto" />
           <h2 className="text-lg font-semibold mt-4">No invoices found</h2>
           <p className="text-muted-foreground mt-2">
-            You haven’t created any invoices yet. Start by adding your first
-            invoice.
+            You haven&apos;t created any invoices yet. Start by adding your
+            first invoice.
           </p>
         </div>
       </div>
@@ -99,8 +99,8 @@ export default async function InvoiceTable() {
               invoice.status === "PAID"
                 ? "success"
                 : invoice.status === "OVERDUE"
-                  ? "destructive"
-                  : "secondary";
+                ? "destructive"
+                : "secondary";
 
             return (
               <TableRow key={invoice.id} className="w-max">

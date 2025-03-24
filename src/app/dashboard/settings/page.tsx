@@ -6,6 +6,8 @@ import { Suspense } from "react";
 import BillingSection from "./_components/BillingSection";
 import ChangePasswordForm from "./forms/ChangePasswordForm";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Settings",
 };

@@ -158,11 +158,23 @@ model UserSubscription {
   stripeCustomerId        String   @unique
   stripeSubscriptionId    String   @unique
   stripePriceId           String   @unique
-  stripeCurrentPeriodEnd DateTime
+  stripeCurrentPeriodEnd  DateTime
   stripeCancelAtPeriodEnd Boolean  @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("user_subscriptions")
+}
+
+model UserMonthlyInvoiceUsage {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  invoiceCount Int      @default(0)
+  month        Int
+  year         Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("user_monthly_invoice_usages")
 }

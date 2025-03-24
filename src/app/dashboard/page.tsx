@@ -40,6 +40,7 @@ export default async function Page() {
           You haven&apos;t created any invoices yet. Start by adding your first
           invoice.
         </p>
+
         <Button asChild className="mt-4">
           <Link href="/dashboard/invoices/create">Create Invoice</Link>
         </Button>
