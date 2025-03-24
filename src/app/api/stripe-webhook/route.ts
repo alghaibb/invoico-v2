@@ -54,15 +54,24 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
     session.subscription as string,
   );
 
-  await prisma.userSubscription.update({
-    where: { id: userId },
-    data: {
+  await prisma.userSubscription.upsert({
+    where: { userId },
+    create: {
+      userId,
       stripeSubscriptionId: subscription.id,
       stripeCustomerId: subscription.customer as string,
       stripePriceId: subscription.items.data[0].price.id,
       stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+      stripeCancelAtPeriodEnd: subscription.cancel_at_period_end,
+    },
+    update: {
+      stripeSubscriptionId: subscription.id,
+      stripeCustomerId: subscription.customer as string,
+      stripePriceId: subscription.items.data[0].price.id,
+      stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+      stripeCancelAtPeriodEnd: subscription.cancel_at_period_end,
     }
-  })
+  });
 }
 
 async function handleSubscriptionCreatedOrUpdated(subscriptionId: string) {
