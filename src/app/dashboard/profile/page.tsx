@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   title: "Profile",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
   const session = await getSession();
 

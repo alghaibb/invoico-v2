@@ -44,10 +44,10 @@ export async function POST(req: NextRequest) {
 }
 
 async function handleSessionCompleted(session: Stripe.Checkout.Session) {
-  const userId = session.metadata?.userId;
+  const userId = session?.metadata?.userId;
 
   if (!userId) {
-    throw new Error("User ID is missing in session metadata");
+    throw new Error("Missing userId in session metadata");
   }
 
   const subscription = await stripe.subscriptions.retrieve(
