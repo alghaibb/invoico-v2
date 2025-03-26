@@ -5,7 +5,6 @@ import { getUserSubscription } from "@/utils/get-user-subscription";
 import { getSession } from "@/utils/session";
 import type { Metadata } from "next";
 import "./globals.css";
-import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: {
