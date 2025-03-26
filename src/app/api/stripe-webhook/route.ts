@@ -1,8 +1,8 @@
-import { env } from "@/env";
+import Stripe from "stripe";
 import prisma from "@/lib/prisma";
 import stripe from "@/lib/stripe";
+import { env } from "@/env";
 import { NextRequest } from "next/server";
-import Stripe from "stripe";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,40 +10,46 @@ export async function POST(req: NextRequest) {
     const signature = req.headers.get("stripe-signature");
 
     if (!signature) {
-      return new Response("Signature is missing", { status: 400 });
+      return new Response("Invalid Signature", { status: 400 });
     }
 
     const event = stripe.webhooks.constructEvent(
       payload,
       signature,
-      env.STRIPE_WEBHOOK_SECRET,
+      env.STRIPE_WEBHOOK_SECRET
     );
 
     console.log(`Received event: ${event.type}`, event.data.object);
 
     switch (event.type) {
       case "checkout.session.completed":
-        await handleSessionCompleted(event.data.object);
+        await handleCheckoutSessionCompleted(event.data.object)
         break;
+
       case "customer.subscription.created":
       case "customer.subscription.updated":
-        await handleSubscriptionCreatedOrUpdated(event.data.object.id);
+        await handleSubscriptionCreatedOrUpdated(event.data.object.id)
         break;
+
       case "customer.subscription.deleted":
-        await handleSubscriptionDeleted(event.data.object);
+        await handleSubscriptionDeleted(event.data.object)
         break;
+
       default:
         console.log(`Unhandled event type: ${event.type}`);
-        break;
     }
 
+
+    return new Response("OK", { status: 200 });
   } catch (error) {
-    console.error(error);
-    return new Response("An error occurred while processing the request", { status: 500 });
+    if (error instanceof Error) {
+      console.log("Error: ", error.stack)
+    }
+    return new Response("Internal Server Error", { status: 500 });
   }
 }
 
-async function handleSessionCompleted(session: Stripe.Checkout.Session) {
+async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
   const userId = session?.metadata?.userId;
 
   if (!userId) {
@@ -54,24 +60,16 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
     session.subscription as string,
   );
 
-  await prisma.userSubscription.upsert({
+  await prisma.userSubscription.update({
     where: { userId },
-    create: {
-      userId,
+    data: {
       stripeSubscriptionId: subscription.id,
       stripeCustomerId: subscription.customer as string,
       stripePriceId: subscription.items.data[0].price.id,
       stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
-      stripeCancelAtPeriodEnd: subscription.cancel_at_period_end,
-    },
-    update: {
-      stripeSubscriptionId: subscription.id,
-      stripeCustomerId: subscription.customer as string,
-      stripePriceId: subscription.items.data[0].price.id,
-      stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
-      stripeCancelAtPeriodEnd: subscription.cancel_at_period_end,
     }
-  });
+  })
+
 }
 
 async function handleSubscriptionCreatedOrUpdated(subscriptionId: string) {

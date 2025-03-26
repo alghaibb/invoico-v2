@@ -9,6 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useModal } from "@/hooks/useModal";
+import { useSubscriptionPlan } from "@/providers/SubscriptionProvider";
+import { canSendEmail } from "@/utils/permissions";
 import { InvoiceStatus } from "@prisma/client";
 import {
   CheckCircle,
@@ -34,11 +36,16 @@ export default function ActionsDropdown({
   invoiceId,
   initialStatus,
 }: ActionsDropdownProps) {
-  const { openSendInvoiceModal, openDeleteInvoiceModal } = useModal();
+  const {
+    openSendInvoiceModal,
+    openDeleteInvoiceModal,
+    openSubscriptionModal,
+  } = useModal();
   const [isPending, startTransition] = useTransition();
-
   const [optimisticStatus, setOptimisticStatus] =
     useOptimistic<InvoiceStatus>(initialStatus);
+  const userSubscription = useSubscriptionPlan();
+  const canSend = canSendEmail(userSubscription);
 
   async function handleMarkAsPaid() {
     const previousStatus = optimisticStatus;
@@ -55,6 +62,17 @@ export default function ActionsDropdown({
       });
     });
   }
+
+  const handleSendInvoice = () => {
+    if (!canSend) {
+      toast.error("You need a Professional or Business plan to send invoices.");
+      setTimeout(() => {
+        openSubscriptionModal();
+      }, 2000);
+    } else {
+      openSendInvoiceModal();
+    }
+  };
 
   return (
     <>
@@ -89,7 +107,7 @@ export default function ActionsDropdown({
           <DropdownMenuSeparator />
 
           <DropdownMenuItem
-            onClick={openSendInvoiceModal}
+            onClick={handleSendInvoice}
             className="flex items-center gap-2"
           >
             <div className="flex items-center gap-2 cursor-default">

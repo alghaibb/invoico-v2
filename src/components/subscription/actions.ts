@@ -24,13 +24,9 @@ export async function createCheckoutSession(priceId: string) {
     success_url: `${env.NEXT_PUBLIC_BASE_URL}/billing-success`,
     cancel_url: `${env.NEXT_PUBLIC_BASE_URL}/billing-cancel`,
     customer_email: user.email,
-    metadata: {
-      userId: user.id,
-    },
+    metadata: { userId: user.id },
     subscription_data: {
-      metadata: {
-        userId: user.id,
-      }
+      metadata: { userId: user.id } 
     },
     custom_text: {
       terms_of_service_acceptance: {

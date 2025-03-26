@@ -11,3 +11,7 @@ export function canCreateInvoice(subscriptionType: SubscriptionType, currentInvo
 
   return currentInvoiceCount < maxInvoices;
 }
+
+export function canSendEmail(subscriptionType: SubscriptionType) {
+  return subscriptionType === "professional" || subscriptionType === "business";
+}

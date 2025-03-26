@@ -15,27 +15,38 @@ import { FileText } from "lucide-react";
 import ActionsDropdown from "./ActionsDropdown";
 
 async function fetchInvoices(userId: string) {
+  // Fetch all invoices for the user with status PENDING
+  const invoices = await prisma.invoice.findMany({
+    where: { userId, status: "PENDING" },
+  });
+
+  // Get current date
   const today = new Date();
 
-  await prisma.invoice.updateMany({
-    where: {
-      userId: userId,
-      status: "PENDING",
-      OR: [
-        {
-          dueDate: 0,
-        },
-        {
-          date: {
-            lte: new Date(today.setDate(today.getDate() - 1)),
-          },
-        },
-      ],
-    },
-    data: {
-      status: "OVERDUE",
-    },
+  // Filter invoices to find those that are overdue
+  const overdueInvoices = invoices.filter(invoice => {
+    if (invoice.dueDate === 0) return true; // Immediately overdue if dueDate is 0
+
+    // Calculate actual due date by adding the dueDate (in days) to the invoice date
+    const invoiceDate = new Date(invoice.date);
+    const calculatedDueDate = new Date(invoiceDate);
+    calculatedDueDate.setDate(invoiceDate.getDate() + invoice.dueDate);
+
+    // Check if today is past the calculated due date
+    return today > calculatedDueDate;
   });
+
+  // Update all overdue invoices to status "OVERDUE"
+  if (overdueInvoices.length > 0) {
+    await prisma.invoice.updateMany({
+      where: {
+        id: { in: overdueInvoices.map(invoice => invoice.id) }
+      },
+      data: { status: "OVERDUE" },
+    });
+  }
+
+  // Fetch all invoices again, including updated ones
   return prisma.invoice.findMany({
     where: { userId: userId },
     select: {
@@ -51,7 +62,6 @@ async function fetchInvoices(userId: string) {
     orderBy: { date: "desc" },
   });
 }
-
 export default async function InvoiceTable() {
   const session = await getSession();
   const userId = session?.user?.id;
