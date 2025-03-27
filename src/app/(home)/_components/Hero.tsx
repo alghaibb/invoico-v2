@@ -1,14 +1,12 @@
 import { RainbowButton } from "@/components/magicui/rainbow-button";
 import { Button } from "@/components/ui/button";
-import { getSession } from "@/utils/session";
 import Image from "next/image";
 import Link from "next/link";
 import HeroImg from "../../../../public/hero.png";
 
-export default async function Hero() {
-  const session = await getSession();
-  const user = session?.user.id;
+export const revalidate = 7200;
 
+export default async function Hero() {
   return (
     <section className="relative w-full min-h-[80vh] flex items-center justify-center px-6 md:px-12 lg:px-20 text-center lg:text-left">
       <div className="absolute inset-0">
@@ -39,15 +37,9 @@ export default async function Hero() {
         </p>
 
         <div className="mt-8 flex items-center justify-center gap-4 flex-col sm:flex-row">
-          {user ? (
-            <RainbowButton asChild className="rounded-md w-full sm:w-auto">
-              <Link href="/dashboard/invoices/create">Create An Invoice</Link>
-            </RainbowButton>
-          ) : (
-            <RainbowButton asChild className="rounded-md w-full sm:w-auto">
-              <Link href="/sign-in">Get Started</Link>
-            </RainbowButton>
-          )}
+          <RainbowButton asChild className="rounded-md w-full sm:w-auto">
+            <Link href="/dashboard/invoices/create">Get Started</Link>
+          </RainbowButton>
 
           <Button
             asChild

@@ -32,7 +32,7 @@ export default function Navbar({ user }: { user?: User }) {
       <div className="md:flex hidden">
         {user ? (
           <div className="flex gap-4 items-center">
-            <Button asChild>
+            <Button asChild variant="outlineSecondary">
               <Link href="/dashboard/invoices">View Your Invoices</Link>
             </Button>
 

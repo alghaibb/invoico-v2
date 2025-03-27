@@ -56,7 +56,7 @@ export default function MobileNav({ user }: { user?: User }) {
             {user ? (
               <>
                 <SheetClose asChild>
-                  <Button asChild>
+                  <Button asChild variant="outlineSecondary">
                     <Link href="/dashboard/invoices/create">
                       Create Invoice
                     </Link>

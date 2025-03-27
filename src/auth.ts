@@ -137,6 +137,7 @@ const authConfig: NextAuthConfig = {
     signOut: "/sign-in",
     error: "/sign-in",
   },
+  trustHost: true,
   secret: env.AUTH_SECRET,
   experimental: { enableWebAuthn: true },
 };
