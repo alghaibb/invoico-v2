@@ -26,6 +26,8 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { AutosizeTextarea } from "@/components/ui/textarea";
+import { useModal } from "@/hooks/useModal";
+import { useSubscriptionPlan } from "@/providers/SubscriptionProvider";
 import { Currency } from "@/types/currency";
 import { formatCurrency } from "@/utils/format-currency";
 import {
@@ -76,6 +78,8 @@ export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
   const [currency, setCurrency] = useState(data.currency as Currency);
   const [selectedTax, setSelectedTax] = useState(data.tax);
   const router = useRouter();
+  const userSubscription = useSubscriptionPlan();
+  const { openSubscriptionModal } = useModal();
 
   const form = useForm<InvoiceValues>({
     resolver: zodResolver(invoiceSchema),
@@ -221,9 +225,11 @@ export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
                       <Select
                         value={field.value}
                         onValueChange={(val) => {
+                          if (userSubscription === "free") return;
                           field.onChange(val);
                           setCurrency(val as Currency);
                         }}
+                        disabled={userSubscription === "free"}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select Currency">
@@ -239,6 +245,19 @@ export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
                       </Select>
                     </FormControl>
                     <FormMessage />
+                    {userSubscription === "free" && (
+                      <div className="mt-2 flex items-center gap-2 md:flex-row flex-col ">
+                        <div className="flex items-center justify-center bg-primary text-background text-xs px-2 py-1 rounded-md shadow-sm">
+                          🌟 Professional & Business Users Only
+                        </div>
+                        <span
+                          className="text-xs text-muted-foreground cursor-pointer underline"
+                          onClick={openSubscriptionModal}
+                        >
+                          Upgrade to unlock this feature
+                        </span>
+                      </div>
+                    )}
                   </FormItem>
                 )}
               />
