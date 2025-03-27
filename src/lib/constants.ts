@@ -56,14 +56,14 @@ export const features: FeatureType[] = [
 ];
 
 export const professionalFeatures = [
-  "Up to 10 invoices per month",
-  "Send invoices via email",
-  "Multi-currency support",
+  "Create up to 10 invoices per month",
+  "Send invoices directly to clients via email",
+  "Access to multi-currency support",
 ];
 
 export const businessFeatures = [
-  "Can create an infinite amount of invoices",
-  "Everything in Premium",
-  "Priority support",
+  "Unlimited invoice creation with no monthly restrictions",
+  "Access to all Professional plan features",
+  "Priority customer support for faster resolutions",
 ];
 

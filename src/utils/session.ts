@@ -1,13 +1,13 @@
-import { cookies } from "next/headers";
 import prisma from "@/lib/prisma";
+import { cookies } from "next/headers";
 
 export async function getSession() {
   try {
-    const cookieStore = await cookies(); 
+    const cookieStore = await cookies();
 
     const possibleTokens = [
       "authjs.session-token",
-      "next-auth.session-token", 
+      "next-auth.session-token",
       process.env.NODE_ENV === "production"
         ? "__Secure-authjs.session-token"
         : "authjs.session-token",
@@ -16,8 +16,7 @@ export async function getSession() {
     let sessionToken = null;
 
     for (const tokenName of possibleTokens) {
-      const cookie = cookieStore.get(tokenName); 
-      console.log(`Checking cookie for token: ${tokenName}`, cookie); 
+      const cookie = cookieStore.get(tokenName);
       if (cookie) {
         sessionToken = cookie.value;
         break;
@@ -25,28 +24,17 @@ export async function getSession() {
     }
 
     if (!sessionToken) {
-      console.warn("❌ No valid session token found in cookies.");
       return null;
     }
-
-    console.log("✅ Session token found:", sessionToken);
 
     const session = await prisma.session.findUnique({
       where: { sessionToken },
       include: { user: true },
     });
 
-    if (!session) {
-      console.warn("❌ No session found in the database.");
+    if (!session || new Date(session.expires) < new Date()) {
       return null;
     }
-
-    if (new Date(session.expires) < new Date()) {
-      console.warn("❌ Session has expired.");
-      return null;
-    }
-
-    console.log("✅ Valid session retrieved:", session);
 
     return {
       ...session,
@@ -59,7 +47,6 @@ export async function getSession() {
       expires: session.expires.toISOString(),
     };
   } catch (error) {
-    console.error("❌ Error fetching session:", error);
     return null;
   }
 }
