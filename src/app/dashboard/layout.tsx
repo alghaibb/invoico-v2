@@ -17,6 +17,8 @@ import { signOut } from "../(auth)/(sign-out)/actions";
 import logo from "../../../public/logo.png";
 import DashboardLinks from "./_components/DashboardLinks";
 import MobileSidebar from "./_components/MobileNavigation";
+import { getUserSubscription } from "@/utils/get-user-subscription";
+import SubscriptionProvider from "@/providers/SubscriptionProvider";
 
 export default async function DashboardLayout({
   children,
@@ -29,8 +31,11 @@ export default async function DashboardLayout({
     redirect("/sign-in");
   }
 
+  const userId = session.user.id
+  const userSubscription = await getUserSubscription(userId);
+
   return (
-    <>
+    <SubscriptionProvider userSubscription={userSubscription}>
       <div className="min-h-screen w-full flex flex-col md:grid md:grid-cols-[240px_1fr] lg:grid-cols-[300px_1fr]">
         <div className="hidden border-r bg-muted/40 md:block">
           <div className="flex flex-col h-full max-h-screen gap-4">
@@ -108,6 +113,6 @@ export default async function DashboardLayout({
           </main>
         </div>
       </div>
-    </>
+    </SubscriptionProvider>
   );
 }
