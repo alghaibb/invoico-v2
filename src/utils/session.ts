@@ -47,6 +47,7 @@ export async function getSession() {
       expires: session.expires.toISOString(),
     };
   } catch (error) {
+    console.error("An error occurred while fetching the session:", error);
     return null;
   }
 }
