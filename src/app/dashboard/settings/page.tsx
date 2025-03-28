@@ -1,5 +1,5 @@
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import { getSession } from "@/utils/session";
 import { Metadata } from "next";
 import { Suspense } from "react";
@@ -27,7 +27,7 @@ export default async function Page() {
 
         <Separator />
 
-        <Suspense fallback={<Skeleton className="w-full h-full" />}>
+        <Suspense fallback={<LoadingSpinner />}>
           <BillingSection />
         </Suspense>
       </div>

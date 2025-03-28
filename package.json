@@ -28,6 +28,8 @@
     "@react-email/components": "0.0.33",
     "@t3-oss/env-nextjs": "^0.12.0",
     "@tabler/icons-react": "^3.30.0",
+    "@tanstack/react-query": "^5.70.0",
+    "@tanstack/react-query-devtools": "^5.70.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/uuid": "^10.0.0",
     "bcryptjs": "^3.0.0",

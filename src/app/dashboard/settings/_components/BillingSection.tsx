@@ -8,6 +8,7 @@ import { getSession } from "@/utils/session";
 import Stripe from "stripe";
 import GetSubscriptionButton from "./GetSubscriptionButton";
 import ManageSubscriptionButton from "./ManageSubscriptionButton";
+import PaymentMethod from "./PaymentMethod";
 
 export default async function BillingSection() {
   const session = await getSession();
@@ -34,14 +35,8 @@ export default async function BillingSection() {
       })
     : null;
 
-  const paymentMethod = latestInvoice?.data[0]?.payment_intent
-    ? await stripe.paymentIntents.retrieve(
-        latestInvoice.data[0].payment_intent as string,
-        {
-          expand: ["payment_method"],
-        }
-      )
-    : null;
+  const paymentIntentId = latestInvoice?.data[0]?.payment_intent as string;
+
   const planName = priceInfo
     ? (priceInfo.product as Stripe.Product).name
     : "Free";
@@ -55,7 +50,6 @@ export default async function BillingSection() {
   return (
     <Card className="w-full mx-auto max-w-2xl">
       <CardContent className="p-8 space-y-6">
-        {/* Header Section */}
         <div className="space-y-2 text-center md:text-start">
           <h1 className="text-3xl font-bold text-primary">
             Billing & Subscription
@@ -67,7 +61,6 @@ export default async function BillingSection() {
 
         <Separator />
 
-        {/* Subscription Info Section */}
         <div className="space-y-4">
           <div className="space-y-2 text-center md:text-left">
             <p className="text-lg text-foreground">
@@ -107,7 +100,6 @@ export default async function BillingSection() {
 
         <Separator />
 
-        {/* Features Section */}
         {features.length > 0 && (
           <div className="space-y-4 text-center md:text-left">
             <h2 className="text-lg font-bold text-primary">
@@ -121,56 +113,9 @@ export default async function BillingSection() {
           </div>
         )}
 
-        {/* Payment Method Section */}
         <Separator />
 
-        {paymentMethod &&
-          typeof paymentMethod.payment_method !== "string" &&
-          paymentMethod.payment_method !== null && (
-            <div className="space-y-4 text-center md:text-left">
-              <h2 className="text-lg font-bold text-primary">
-                Payment Information
-              </h2>
-
-              {/* Payment Method Type */}
-              <div className="space-y-1">
-                <h3 className="text-sm font-semibold text-muted-foreground">
-                  Payment Method:
-                </h3>
-                <p className="font-bold capitalize text-foreground">
-                  {(paymentMethod.payment_method.type as string).replace(
-                    "_",
-                    " "
-                  )}
-                </p>
-              </div>
-
-              {/* Card Details */}
-              {"card" in paymentMethod.payment_method &&
-                paymentMethod.payment_method.card && (
-                  <div className="space-y-1">
-                    <h3 className="text-sm font-semibold text-muted-foreground">
-                      Card Details:
-                    </h3>
-                    <p className="text-foreground">
-                      •••• •••• •••• {paymentMethod.payment_method.card.last4}
-                    </p>
-                  </div>
-                )}
-
-              {/* Billing Email */}
-              {paymentMethod.payment_method.billing_details?.email && (
-                <div className="space-y-1">
-                  <h3 className="text-sm font-semibold text-muted-foreground">
-                    Billing Email:
-                  </h3>
-                  <p className="text-foreground">
-                    {paymentMethod.payment_method.billing_details.email}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+        {paymentIntentId && <PaymentMethod paymentIntentId={paymentIntentId} />}
 
         <div className="flex">
           {subscription ? (

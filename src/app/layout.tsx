@@ -1,5 +1,6 @@
 import SubscriptionModal from "@/components/subscription/SubscriptionModal.tsx";
 import { Toaster } from "@/components/ui/sonner";
+import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -20,12 +21,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={"antialiased mx-auto min-h-screen w-full bg-background"}>
-        <main className="flex flex-col min-h-screen">
-          <div className="flex-grow">
-            {children}
-            <SubscriptionModal />
-          </div>
-        </main>
+        <ReactQueryProvider>
+          <main className="flex flex-col min-h-screen">
+            <div className="flex-grow">
+              {children}
+              <SubscriptionModal />
+            </div>
+          </main>
+        </ReactQueryProvider>
 
         <Toaster richColors closeButton theme="light" />
       </body>
