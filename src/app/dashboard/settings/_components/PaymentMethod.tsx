@@ -1,43 +1,54 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { useQuery } from "@tanstack/react-query";
+import { PaymentMethodData } from "@/types/payment-method";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface PaymentMethodProps {
   paymentIntentId: string | null;
 }
 
-async function fetchPaymentMethod(paymentIntentId: string | null) {
-  if (!paymentIntentId) return null;
-
-  try {
-    const response = await fetch(
-      `/api/get-payment-method?paymentIntentId=${paymentIntentId}`
-    );
-
-    if (!response.ok) {
-      console.error(`Error fetching payment details: ${response.status} - ${response.statusText}`);
-      throw new Error("Failed to fetch payment details.");
-    }
-
-    const data = await response.json();
-    console.log("Payment Method Data:", data);
-    return data;
-  } catch (error) {
-    console.error("Error fetching payment details:", error);
-    throw error;
-  }
-}
-
 export default function PaymentMethod({ paymentIntentId }: PaymentMethodProps) {
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["paymentMethod", paymentIntentId],
-    queryFn: () => fetchPaymentMethod(paymentIntentId),
-    enabled: !!paymentIntentId,
-  });
+  const [data, setData] = useState<PaymentMethodData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (isLoading) {
+  useEffect(() => {
+    if (!paymentIntentId) return;
+
+    const fetchPaymentMethod = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch(
+          `/api/get-payment-method?paymentIntentId=${paymentIntentId}`
+        );
+
+        if (!response.ok) {
+          console.error(
+            `Error fetching payment details: ${response.status} - ${response.statusText}`
+          );
+          throw new Error("Failed to fetch payment details.");
+        }
+
+        const result: PaymentMethodData = await response.json();
+        console.log("Payment Method Data:", result);
+        setData(result);
+      } catch (err) {
+        console.error("Error fetching payment details:", err);
+        setError("Failed to fetch payment details.");
+        toast.error("Failed to fetch payment details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPaymentMethod();
+  }, [paymentIntentId]);
+
+  if (loading) {
     return (
       <div className="space-y-2">
         <Skeleton className="h-6 w-3/4" />
@@ -48,8 +59,7 @@ export default function PaymentMethod({ paymentIntentId }: PaymentMethodProps) {
   }
 
   if (error) {
-    toast.error("Failed to fetch payment details.");
-    return <p className="text-sm text-destructive">Failed to load payment information.</p>;
+    return toast.error("Failed to fetch payment details.");
   }
 
   if (!data || !data.last4) return null;
