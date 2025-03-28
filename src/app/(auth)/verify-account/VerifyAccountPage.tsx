@@ -24,7 +24,7 @@ export default function VerifyAccountPage() {
       <Separator className="md:my-6 my-4" />
 
       <p className="text-sm text-center text-muted-foreground">
-        Didn’t receive an OTP?{" "}
+        Didn&apos;t receive an OTP?{" "}
         <ResponsiveModal>
           <ResponsiveModalTrigger asChild>
             <Button variant="link" className="px-0">
