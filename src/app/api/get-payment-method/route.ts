@@ -37,6 +37,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(response);
   } catch (error) {
+    console.error("Error retrieving payment method:", error);
     return NextResponse.json({ error: "Failed to retrieve payment details" }, { status: 500 });
   }
 }

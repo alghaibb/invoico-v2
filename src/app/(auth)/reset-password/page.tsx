@@ -1,4 +1,4 @@
-import { Spinner } from "@/components/ui/loading-spinner";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import ResetPasswordPage from "./ResetPasswordPage";
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <Suspense fallback={<Spinner />}>
+    <Suspense fallback={<LoadingSpinner />}>
       <ResetPasswordPage />
     </Suspense>
   );
