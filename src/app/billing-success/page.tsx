@@ -23,7 +23,7 @@ export default function BillingSuccess() {
         </p>
         <div className="mt-8">
           <Button asChild>
-            <Link href="/dashboard">Go to Dashboard</Link>
+            <Link href="/dashboard/settings">Go to dashboard settings</Link>
           </Button>
         </div>
       </div>

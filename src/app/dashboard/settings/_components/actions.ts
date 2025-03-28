@@ -30,7 +30,7 @@ export async function createCustomerPortalSession() {
 
   const portalSession = await stripe.billingPortal.sessions.create({
     customer: stripeCustomerId,
-    return_url: `${env.NEXT_PUBLIC_BASE_URL}/dashboard`,
+    return_url: `${env.NEXT_PUBLIC_BASE_URL}/dashboard/settings`,
   });
 
   if (!portalSession.url) {

@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { PasswordInput } from "@/components/ui/password-input";
+import { Separator } from "@/components/ui/separator";
 import {
   changePasswordSchema,
   ChangePasswordValues,
@@ -48,12 +49,14 @@ export default function ChangePasswordForm({ userId }: { userId: string }) {
   return (
     <Card className="w-full mx-auto max-w-2xl">
       <CardContent className="p-6 space-y-6">
-        <h2 className="text-3xl font-semibold md:text-start text-center">
-          Change Password
-        </h2>
-        <p className="text-muted-foreground text-sm md:text-start text-center">
-          Secure your account by updating your password.
-        </p>
+        <div className="space-y-2 text-center md:text-start">
+          <h1 className="text-3xl font-bold text-primary">Change Password</h1>
+          <p className="text-sm text-muted-foreground">
+            Secure your account by updating your password.
+          </p>
+        </div>
+
+        <Separator />
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
