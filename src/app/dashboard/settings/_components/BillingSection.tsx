@@ -8,6 +8,7 @@ import { getSession } from "@/utils/session";
 import Stripe from "stripe";
 import GetSubscriptionButton from "./GetSubscriptionButton";
 import ManageSubscriptionButton from "./ManageSubscriptionButton";
+import PaymentMethod from "./PaymentMethod";
 
 export default async function BillingSection() {
   const session = await getSession();
@@ -42,7 +43,7 @@ export default async function BillingSection() {
 
     console.log("Latest Invoice Data:", latestInvoice);
 
-    // const paymentIntentId = latestInvoice?.data[0]?.payment_intent as string;
+    const paymentIntentId = latestInvoice?.data[0]?.payment_intent as string;
 
     const planName = priceInfo
       ? (priceInfo.product as Stripe.Product).name
@@ -121,6 +122,10 @@ export default async function BillingSection() {
           )}
 
           <Separator />
+
+          {paymentIntentId && (
+            <PaymentMethod paymentIntentId={paymentIntentId} />
+          )}
 
           <div className="flex">
             {subscription ? (

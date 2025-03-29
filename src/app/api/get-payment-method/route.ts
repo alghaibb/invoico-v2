@@ -7,21 +7,25 @@ export async function GET(req: NextRequest) {
   const paymentIntentId = searchParams.get("paymentIntentId");
 
   if (!paymentIntentId) {
+    console.error("PaymentIntent ID is missing.");
     return NextResponse.json({ error: "PaymentIntent ID is required" }, { status: 400 });
   }
 
   try {
+    console.log(`Fetching PaymentIntent: ${paymentIntentId}`);
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId, {
       expand: ["payment_method"],
     });
 
     if (!paymentIntent || typeof paymentIntent.payment_method === "string") {
+      console.error("No payment method found or PaymentIntent invalid.");
       return NextResponse.json({ error: "No payment method found" }, { status: 404 });
     }
 
     const paymentMethod = paymentIntent.payment_method as Stripe.PaymentMethod;
 
     if (paymentMethod.type !== "card") {
+      console.error(`Unsupported payment method type: ${paymentMethod.type}`);
       return NextResponse.json({ error: "Only card payments are supported" }, { status: 400 });
     }
 
@@ -34,6 +38,8 @@ export async function GET(req: NextRequest) {
       cardholderName: billingDetails?.name || null,
       billingEmail: billingDetails?.email || null,
     };
+
+    console.log("Successfully retrieved payment method details:", response);
 
     return NextResponse.json(response);
   } catch (error) {
