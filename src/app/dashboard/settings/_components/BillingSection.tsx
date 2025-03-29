@@ -8,7 +8,6 @@ import { getSession } from "@/utils/session";
 import Stripe from "stripe";
 import GetSubscriptionButton from "./GetSubscriptionButton";
 import ManageSubscriptionButton from "./ManageSubscriptionButton";
-import PaymentMethod from "./PaymentMethod";
 
 export default async function BillingSection() {
   const session = await getSession();
@@ -122,10 +121,6 @@ export default async function BillingSection() {
           )}
 
           <Separator />
-
-          {paymentIntentId && (
-            <PaymentMethod paymentIntentId={paymentIntentId} />
-          )}
 
           <div className="flex">
             {subscription ? (
