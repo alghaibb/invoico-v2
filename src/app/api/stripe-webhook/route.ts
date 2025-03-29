@@ -10,7 +10,6 @@ export async function POST(req: NextRequest) {
     const signature = req.headers.get("stripe-signature");
 
     if (!signature) {
-      console.error("❌ No Stripe signature found");
       return new Response("Invalid Signature", { status: 400 });
     }
 
@@ -22,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     console.log(`Received event: ${event.type}`, event.data.object);
 
-    switch (eventType) {
+    switch (event.type) {
       case "checkout.session.completed":
         await handleCheckoutSessionCompleted(event.data.object)
         break;
@@ -37,14 +36,14 @@ export async function POST(req: NextRequest) {
         break;
 
       default:
-        console.log(`⚠️ Unhandled event type: ${eventType}`);
+        console.log(`Unhandled event type: ${event.type}`);
     }
 
 
     return new Response("OK", { status: 200 });
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error: ", error.stack);
+      console.log("Error: ", error.stack)
     }
     return new Response("Internal Server Error", { status: 500 });
   }
@@ -54,23 +53,16 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
   const userId = session?.metadata?.userId;
 
   if (!userId) {
-    console.error("Missing userId in session metadata");
-    return;
+    throw new Error("Missing userId in session metadata");
   }
 
-  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+  const subscription = await stripe.subscriptions.retrieve(
+    session.subscription as string,
+  );
 
-  await prisma.userSubscription.upsert({
-    where: { userId },
-    create: {
-      userId,
-      stripeSubscriptionId: subscription.id,
-      stripeCustomerId: subscription.customer as string,
-      stripePriceId: subscription.items.data[0].price.id,
-      stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
-      stripeCancelAtPeriodEnd: subscription.cancel_at_period_end,
-    },
-    update: {
+  await prisma.userSubscription.update({
+    where: { id: userId },
+    data: {
       stripeSubscriptionId: subscription.id,
       stripeCustomerId: subscription.customer as string,
       stripePriceId: subscription.items.data[0].price.id,
@@ -80,13 +72,8 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 
 }
 
-async function handleSubscriptionCreatedOrUpdated(subscription: Stripe.Subscription) {
-  const userId = subscription.metadata?.userId; 
-
-  if (!userId) {
-    console.error("Subscription metadata is missing userId.");
-    return;
-  }
+async function handleSubscriptionCreatedOrUpdated(subscriptionId: string) {
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
   if (
     subscription.status === "active" ||
@@ -121,8 +108,6 @@ async function handleSubscriptionCreatedOrUpdated(subscription: Stripe.Subscript
 }
 
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
-  console.log("✅ Subscription Deleted:", subscription);
-
   await prisma.userSubscription.deleteMany({
     where: {
       stripeCustomerId: subscription.customer as string,
