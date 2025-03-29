@@ -19,74 +19,61 @@ export async function POST(req: NextRequest) {
       env.STRIPE_WEBHOOK_SECRET
     );
 
-    const eventObject = event.data.object as Stripe.Subscription | Stripe.Checkout.Session;
+    console.log(`Received event: ${event.type}`, event.data.object);
 
     switch (event.type) {
       case "checkout.session.completed":
-        await handleCheckoutSessionCompleted(eventObject as Stripe.Checkout.Session);
+        await handleCheckoutSessionCompleted(event.data.object)
         break;
 
       case "customer.subscription.created":
       case "customer.subscription.updated":
-        await handleSubscriptionCreatedOrUpdated(eventObject as Stripe.Subscription);
+        await handleSubscriptionCreatedOrUpdated(event.data.object.id)
         break;
 
       case "customer.subscription.deleted":
-        await handleSubscriptionDeleted(eventObject as Stripe.Subscription);
+        await handleSubscriptionDeleted(event.data.object)
         break;
 
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
 
+
     return new Response("OK", { status: 200 });
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error: ", error.stack);
+      console.log("Error: ", error.stack)
     }
     return new Response("Internal Server Error", { status: 500 });
   }
 }
 
 async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
-  const userId = session.metadata?.userId; 
+  const userId = session?.metadata?.userId;
 
   if (!userId) {
-    console.error("Missing userId in session metadata");
-    return;
+    throw new Error("Missing userId in session metadata");
   }
 
-  const subscriptionId = session.subscription as string;
+  const subscription = await stripe.subscriptions.retrieve(
+    session.subscription as string,
+  );
 
-  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-
-  await prisma.userSubscription.upsert({
-    where: { userId },
-    create: {
-      userId,
+  await prisma.userSubscription.update({
+    where: { id: userId },
+    data: {
       stripeSubscriptionId: subscription.id,
       stripeCustomerId: subscription.customer as string,
       stripePriceId: subscription.items.data[0].price.id,
       stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
-      stripeCancelAtPeriodEnd: subscription.cancel_at_period_end,
-    },
-    update: {
-      stripeSubscriptionId: subscription.id,
-      stripeCustomerId: subscription.customer as string,
-      stripePriceId: subscription.items.data[0].price.id,
-      stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
-      stripeCancelAtPeriodEnd: subscription.cancel_at_period_end,
     }
-  });
+  })
+
 }
 
-async function handleSubscriptionCreatedOrUpdated(subscription: Stripe.Subscription) {
-  const userId = subscription.metadata?.userId; 
-
-  if (!userId) {
-    console.error("Subscription metadata is missing userId.");
-    return;
-  }
+async function handleSubscriptionCreatedOrUpdated(subscriptionId: string) {
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
   if (
     subscription.status === "active" ||
@@ -94,9 +81,11 @@ async function handleSubscriptionCreatedOrUpdated(subscription: Stripe.Subscript
     subscription.status === "past_due"
   ) {
     await prisma.userSubscription.upsert({
-      where: { userId },
+      where: {
+        userId: subscription.metadata.userId,
+      },
       create: {
-        userId,
+        userId: subscription.metadata.userId,
         stripeSubscriptionId: subscription.id,
         stripeCustomerId: subscription.customer as string,
         stripePriceId: subscription.items.data[0].price.id,
@@ -104,8 +93,6 @@ async function handleSubscriptionCreatedOrUpdated(subscription: Stripe.Subscript
         stripeCancelAtPeriodEnd: subscription.cancel_at_period_end,
       },
       update: {
-        stripeSubscriptionId: subscription.id,
-        stripeCustomerId: subscription.customer as string,
         stripePriceId: subscription.items.data[0].price.id,
         stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
         stripeCancelAtPeriodEnd: subscription.cancel_at_period_end,
@@ -113,13 +100,17 @@ async function handleSubscriptionCreatedOrUpdated(subscription: Stripe.Subscript
     });
   } else {
     await prisma.userSubscription.deleteMany({
-      where: { stripeCustomerId: subscription.customer as string }
+      where: {
+        stripeCustomerId: subscription.customer as string,
+      }
     });
   }
 }
 
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   await prisma.userSubscription.deleteMany({
-    where: { stripeCustomerId: subscription.customer as string }
+    where: {
+      stripeCustomerId: subscription.customer as string,
+    }
   });
 }
