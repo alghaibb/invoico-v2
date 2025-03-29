@@ -42,7 +42,7 @@ export default async function BillingSection() {
 
     console.log("Latest Invoice Data:", latestInvoice);
 
-    const paymentIntentId = latestInvoice?.data[0]?.payment_intent as string;
+    // const paymentIntentId = latestInvoice?.data[0]?.payment_intent as string;
 
     const planName = priceInfo
       ? (priceInfo.product as Stripe.Product).name
