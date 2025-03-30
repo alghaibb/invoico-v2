@@ -14,101 +14,92 @@ export default async function BillingSection() {
   const session = await getSession();
   const userId = session?.user.id;
 
-  if (!userId) {
-    console.error("User is not authenticated.");
-    return null;
-  }
+  if (!userId) return null;
 
-  try {
-    const subscription = await prisma.userSubscription.findUnique({
-      where: { userId },
-    });
+  const subscription = await prisma.userSubscription.findUnique({
+    where: { userId },
+  });
 
-    console.log("Subscription Data:", subscription);
+  const priceInfo = subscription
+    ? await stripe.prices.retrieve(subscription.stripePriceId, {
+        expand: ["product"],
+      })
+    : null;
 
-    const priceInfo = subscription
-      ? await stripe.prices.retrieve(subscription.stripePriceId, {
-          expand: ["product"],
-        })
-      : null;
+  const latestInvoice = subscription
+    ? await stripe.invoices.list({
+        customer: subscription.stripeCustomerId,
+        limit: 1,
+      })
+    : null;
 
-    console.log("Price Info Data:", priceInfo);
+  const paymentIntentId = latestInvoice?.data[0]?.payment_intent as string;
 
-    const latestInvoice = subscription
-      ? await stripe.invoices.list({
-          customer: subscription.stripeCustomerId,
-          limit: 1,
-        })
-      : null;
+  const planName = priceInfo
+    ? (priceInfo.product as Stripe.Product).name
+    : "Free";
 
-    console.log("Latest Invoice Data:", latestInvoice);
+  const features =
+    planName === "Professional"
+      ? professionalFeatures
+      : planName === "Business"
+      ? businessFeatures
+      : [];
 
-    const paymentIntentId = latestInvoice?.data[0]?.payment_intent as string;
+  return (
+    <Card className="w-full mx-auto max-w-2xl">
+      <CardContent className="p-8 space-y-6">
+        <div className="space-y-2 text-center md:text-start">
+          <h1 className="text-3xl font-bold text-primary">
+            Billing & Subscription
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Manage your subscription and view plan details below.
+          </p>
+        </div>
 
-    const planName = priceInfo
-      ? (priceInfo.product as Stripe.Product).name
-      : "Free";
-    const features =
-      planName === "Professional"
-        ? professionalFeatures
-        : planName === "Business"
-        ? businessFeatures
-        : [];
+        <Separator />
 
-    return (
-      <Card className="w-full mx-auto max-w-2xl">
-        <CardContent className="p-8 space-y-6">
-          <div className="space-y-2 text-center md:text-start">
-            <h1 className="text-3xl font-bold text-primary">
-              Billing & Subscription
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Manage your subscription and view plan details below.
+        <div className="space-y-4">
+          <div className="space-y-2 text-center md:text-left">
+            <p className="text-lg text-foreground">
+              Your current plan:{" "}
+              <span className="font-bold text-primary">{planName}</span>
             </p>
-          </div>
 
-          <Separator />
+            {subscription?.stripeCancelAtPeriodEnd &&
+              subscription.stripeCurrentPeriodEnd && (
+                <p className="text-destructive text-sm">
+                  Your subscription will be canceled on{" "}
+                  <span className="font-bold">
+                    {formatDate(subscription.stripeCurrentPeriodEnd)}
+                  </span>
+                </p>
+              )}
 
-          <div className="space-y-4">
-            <div className="space-y-2 text-center md:text-left">
-              <p className="text-lg text-foreground">
-                Your current plan:{" "}
-                <span className="font-bold text-primary">{planName}</span>
+            <div className="text-sm">
+              <p>
+                Status:{" "}
+                <span className="font-bold">
+                  {subscription ? "Active" : "Inactive"}
+                </span>
               </p>
-
-              {subscription?.stripeCancelAtPeriodEnd &&
-                subscription.stripeCurrentPeriodEnd && (
-                  <p className="text-destructive text-sm">
-                    Your subscription will be canceled on{" "}
+              {subscription?.stripeCurrentPeriodEnd &&
+                !subscription.stripeCancelAtPeriodEnd && (
+                  <p>
+                    Next Billing Date:{" "}
                     <span className="font-bold">
                       {formatDate(subscription.stripeCurrentPeriodEnd)}
                     </span>
                   </p>
                 )}
-
-              <div className="text-sm">
-                <p>
-                  Status:{" "}
-                  <span className="font-bold">
-                    {subscription ? "Active" : "Inactive"}
-                  </span>
-                </p>
-                {subscription?.stripeCurrentPeriodEnd &&
-                  !subscription.stripeCancelAtPeriodEnd && (
-                    <p>
-                      Next Billing Date:{" "}
-                      <span className="font-bold">
-                        {formatDate(subscription.stripeCurrentPeriodEnd)}
-                      </span>
-                    </p>
-                  )}
-              </div>
             </div>
           </div>
+        </div>
 
-          <Separator />
-
-          {features.length > 0 && (
+        {features.length > 0 && (
+          <>
+            <Separator />
             <div className="space-y-4 text-center md:text-left">
               <h2 className="text-lg font-bold text-primary">
                 Features Included:
@@ -119,26 +110,24 @@ export default async function BillingSection() {
                 ))}
               </ul>
             </div>
-          )}
+          </>
+        )}
 
-          <Separator />
-
-          {paymentIntentId && (
+        {paymentIntentId && (
+          <>
+            <Separator />
             <PaymentMethod paymentIntentId={paymentIntentId} />
-          )}
+          </>
+        )}
 
-          <div className="flex">
-            {subscription ? (
-              <ManageSubscriptionButton />
-            ) : (
-              <GetSubscriptionButton />
-            )}
-          </div>
-        </CardContent>
-      </Card>
-    );
-  } catch (error) {
-    console.error("Error loading billing section:", error);
-    return null;
-  }
+        <div className="flex">
+          {subscription ? (
+            <ManageSubscriptionButton />
+          ) : (
+            <GetSubscriptionButton />
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
 }
