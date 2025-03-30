@@ -1,5 +1,7 @@
 import { features, FeatureType } from "@/lib/constants";
 
+export const revalidate = 86400;
+
 export default function Features() {
   return (
     <section className="relative w-full py-20 px-6 md:px-12 lg:px-20 text-center">
