@@ -16,7 +16,7 @@ export default async function Hero() {
           layout="fill"
           objectFit="cover"
           className="opacity-30"
-          priority
+          priority={true}
         />
       </div>
 
