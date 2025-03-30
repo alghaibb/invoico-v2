@@ -12,7 +12,6 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    console.log(`Fetching PaymentIntent: ${paymentIntentId}`);
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId, {
       expand: ["payment_method"],
     });
@@ -38,8 +37,6 @@ export async function GET(req: NextRequest) {
       cardholderName: billingDetails?.name || null,
       billingEmail: billingDetails?.email || null,
     };
-
-    console.log("Successfully retrieved payment method details:", response);
 
     return NextResponse.json(response);
   } catch (error) {

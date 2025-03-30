@@ -27,7 +27,6 @@ export default function PaymentMethod({ paymentIntentId }: PaymentMethodProps) {
   const { data, error, isLoading } = useQuery({
     queryKey: ["payment-method", paymentIntentId],
     queryFn: () => fetchPaymentMethod(paymentIntentId as string),
-    enabled: !!paymentIntentId,
   });
 
   if (isLoading) {
@@ -55,10 +54,11 @@ export default function PaymentMethod({ paymentIntentId }: PaymentMethodProps) {
   }
 
   if (error) {
-    return toast.error("Failed to fetch payment details.");
+    toast.error("Failed to fetch payment details.");
+    return null;
   }
 
-  if (!data || !data.last4) return null;
+  if (!data) return null;
 
   const { brand, last4, billingEmail, cardholderName } = data;
 
