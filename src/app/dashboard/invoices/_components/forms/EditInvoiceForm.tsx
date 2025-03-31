@@ -84,6 +84,7 @@ export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
   const form = useForm<InvoiceValues>({
     resolver: zodResolver(invoiceSchema),
     mode: "onChange",
+    shouldFocusError: false,
     defaultValues: {
       invoiceName: data.invoiceName,
       invoiceNumber: data.invoiceNumber,
@@ -167,6 +168,7 @@ export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
                           {...field}
                           placeholder="Building Invoice"
                           error={!!fieldState.error}
+                          autoFocus={false}
                         />
                       </FormControl>
                     </div>
@@ -557,6 +559,7 @@ export default function EditInvoiceForm({ data }: EditInvoiceFormProps) {
                                 }
                               }}
                               error={!!fieldState.error}
+                              min={0}
                             />
                           </FormControl>
                           <FormMessage />

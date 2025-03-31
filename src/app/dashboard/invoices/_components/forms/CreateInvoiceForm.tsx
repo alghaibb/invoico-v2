@@ -61,10 +61,10 @@ export default function CreateInvoiceForm({
   const router = useRouter();
   const userSubscription = useSubscriptionPlan();
   const { openSubscriptionModal } = useModal();
-
   const form = useForm<InvoiceValues>({
     resolver: zodResolver(invoiceSchema),
     mode: "onChange",
+    shouldFocusError: false,
     defaultValues: {
       invoiceName: "",
       invoiceNumber: "",
@@ -138,6 +138,7 @@ export default function CreateInvoiceForm({
                           {...field}
                           placeholder="Building Invoice"
                           error={!!fieldState.error}
+                          autoFocus={false}
                         />
                       </FormControl>
                     </div>
@@ -527,6 +528,7 @@ export default function CreateInvoiceForm({
                                 }
                               }}
                               error={!!fieldState.error}
+                              min={0}
                             />
                           </FormControl>
                           <FormMessage />
