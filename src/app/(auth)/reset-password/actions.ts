@@ -1,7 +1,6 @@
 "use server"
 
 import prisma from "@/lib/prisma";
-import { getUserByResetPasswordToken } from "@/utils/db/user";
 import { deleteResetPasswordToken } from "@/utils/token";
 import { resetPasswordSchema, ResetPasswordValues } from "@/validations/auth";
 import bcrypt from "bcryptjs";
@@ -14,19 +13,13 @@ export async function resetPassword(token: string, values: ResetPasswordValues) 
     const { newPassword, confirmNewPassword } = validatedValues;
 
     if (newPassword !== confirmNewPassword) {
-      return { error: "Passwords do not match" };
+      return { error: "Passwords do not match." };
     }
 
     const resetPasswordToken = await prisma.resetPasswordToken.findFirst({
       where: { token },
       include: { user: true },
     });
-
-    const user = await getUserByResetPasswordToken(token);
-
-    if (await bcrypt.compare(newPassword, user?.password as string)) {
-      return { error: "You cannot use the old password as the new password." };
-    }
 
     if (!resetPasswordToken || !resetPasswordToken.user) {
       return { error: "Invalid or expired token." };
@@ -35,6 +28,13 @@ export async function resetPassword(token: string, values: ResetPasswordValues) 
     if (resetPasswordToken.expiresAt < new Date()) {
       await deleteResetPasswordToken(resetPasswordToken.id);
       return { error: "Token has expired. Please request a new password reset link." };
+    }
+
+    const user = resetPasswordToken.user;
+
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    if (isSamePassword) {
+      return { error: "You cannot use the old password as the new password." };
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -51,6 +51,6 @@ export async function resetPassword(token: string, values: ResetPasswordValues) 
   } catch (error) {
     if (isRedirectError(error)) throw error;
     console.error("Error resetting password:", error);
-    return { error: "Error resetting password" }
+    return { error: "Error resetting password." };
   }
 }
