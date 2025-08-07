@@ -33,8 +33,8 @@ export async function resetPassword(token: string, values: ResetPasswordValues) 
     const user = resetPasswordToken.user;
 
     if (!user.password) {
-  return { error: "User does not have a valid password." };
-}
+      return { error: "User does not have a valid password." };
+    }
 
     const isSamePassword = await bcrypt.compare(newPassword, user.password);
     if (isSamePassword) {
